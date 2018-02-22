@@ -1,0 +1,75 @@
+% This is LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+\documentclass{llncs}
+
+\usepackage{makeidx}  
+
+\begin{document}
+
+\title{Exploratory Population Analysis with Unbalanced Optimal Transport}
+\titlerunning{Exploratory Population Analysis with Unbalanced Optimal Transport}  
+
+\author{Samuel Gerber, Marc Niethammer, Martin Styner, Stephen Aylward}
+\authorrunning{Gerber et al.} 
+\institute{Kitware Inc, Carborro NC 27510, USA,\\
+\email{samuel.gerber@kitware.com}
+\and
+University of North Carolina, Chapel Hill NC 27504, USA}
+
+
+\maketitle              
+
+% What problems are we addressing?
+%  - [MRI] disentangle mass from shape changes
+%  - [MRI] No segmentations needed
+%  - [VESSELS] unstructured point clouds
+%  - [VESSELS] background blood perfusion
+
+% What's new?
+%  - Hypothesis generation
+%  - Different measure to capture changes
+%  - No deformable registration
+%  - No parameter tuning
+%  - [MRI] Unbalanced mass transport
+%  - [VESSELS] Decomposition of transport plan with respect to underlying measure
+
+
+\begin{abstract}
+The plethora of data from neuroimaging studies provide a rich opportunity to
+discover effects and generate hypotheses through exploratory data analysis. The
+pathologies in brain disease often manifest in changes in shape along with
+deterioration and alteration of brain matter, i.e. changes in mass. We propose
+to use unbalanced optimal transport to disentangle shape from mass changes and
+localize those changes. The exploratory analysis approach generates images of
+transport cost and mass changes for each subject in the population.  Using
+voxelwise correlations with disease indicators on these images highlight
+regions of interest in mass or shape changes related to the disease indicator.
+We demonstrate the method on the OASIS brain MRI data set, which includes subject
+ranging from healthy to mild and moderate dementia. The results corroborate
+known pathology changes related to dementia and suggest avenues for further
+clinical research. Additionally regression and permutation testing on the
+transport cost and mass change images improve on existing methods to predict
+disease measures and indicates that the proposed method captures a larger
+portion of the pathology induced changes.  
+\end{abstract}
+
+\section{Introduction}
+
+\section{Background}
+
+\subsection{Population Analysis}
+
+\subsection{Optimal Transport}
+
+\section{Optimal Transport for Population Analysis}
+
+\section{Application to OASIS Brain MRI}
+
+\section{Conclusion}
+
+- Localized mass preserving
+- Clustering
+
+\end{document}
