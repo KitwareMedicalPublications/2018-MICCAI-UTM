@@ -62,7 +62,9 @@ proposed method captures a larger portion of the pathology induced changes.
 \section{Introduction}
 \begin{figure}
 \centering
-\begin{tabular}{c|c}
+\begin{tabular}{|c|}
+\hline
+\begin{tabular}{c||c}
 \begin{tabular}{cc}
 \includegraphics[width=0.1\linewidth]{ellipse0001} &
 \includegraphics[width=0.1\linewidth]{ellipse0002} \\
@@ -78,20 +80,30 @@ proposed method captures a larger portion of the pathology induced changes.
         &
 \begin{tabular}{l|c|c|c}
 Intensity&
-\includegraphics[width=0.2\linewidth]{cor-mass-intensity} &
-\includegraphics[width=0.2\linewidth]{cor-rx-ry-intensity} &
-\includegraphics[width=0.2\linewidth]{cor-rx-ry-mass-intensity} \\ \hline
+\includegraphics[width=0.18\linewidth]{cor-mass-intensity} &
+\includegraphics[width=0.18\linewidth]{cor-rx-ry-intensity} &
+\includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-intensity} \\ \hline
 Mass&
-\includegraphics[width=0.2\linewidth]{cor-mass-mass} &
-\includegraphics[width=0.2\linewidth]{cor-rx-ry-mass} &
-\includegraphics[width=0.2\linewidth]{cor-rx-ry-mass-mass} \\
+\includegraphics[width=0.18\linewidth]{cor-mass-mass} &
+\includegraphics[width=0.18\linewidth]{cor-rx-ry-mass} &
+\includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-mass} \\
 Cost&
-\includegraphics[width=0.2\linewidth]{cor-mass-cost} &
-\includegraphics[width=0.2\linewidth]{cor-rx-ry-cost} &
-\includegraphics[width=0.2\linewidth]{cor-rx-ry-mass-cost} \\ \hline \hline
-        & Size & Ellipticity & Ellipticity + Size
+\includegraphics[width=0.18\linewidth]{cor-mass-cost} &
+\includegraphics[width=0.18\linewidth]{cor-rx-ry-cost} &
+\includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-cost} \\ \hline 
+        &  Size & Ellipticity & Ellipticity + Size
 \end{tabular} \\
-        (a) & (b)
+        (a) Data & (b) Spatial Distribution of Correlations
+\end{tabular}
+        \\ \hline \hline 
+\begin{tabular}{c|c|c}
+\includegraphics[width=0.3\linewidth]{hist-mass} &
+\includegraphics[width=0.3\linewidth]{hist-ellipticity} &
+\includegraphics[width=0.3\linewidth]{hist-additive} \\ \hline 
+        Size & Ellipticity & Ellipticity + Size
+\end{tabular}\\
+        (c) Smoothed Histogram of Correlations\\
+        \hline
 \end{tabular}
 \caption{\label{fig:cor-ellipse}
 Illustration of unbalanced optimal transport on a (a) toy data set of a 100
