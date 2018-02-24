@@ -3,10 +3,19 @@
 % for Lecture Notes in Computer Science,
 % version 2.4 for LaTeX2e as of 16. April 2010
 \documentclass{llncs}
+
+
 \usepackage{array,multirow}
+\usepackage{color, colortbl}
 \usepackage{makeidx}  
 \usepackage{rotating}
 \usepackage{graphicx}
+
+\definecolor{col1}{rgb}{0.988,0.839,0.571}
+\definecolor{col2}{rgb}{0.886,0.886,0.555}
+\definecolor{col3}{rgb}{0.582,0.661,0.976}
+\definecolor{white}{rgb}{1,1,1}
+
 \graphicspath{{./Figures/OasisCor/},{./Figures/OasisRegression/},{./Figures/Ellipse/}}
 \DeclareGraphicsExtensions{.pdf,.png}
 
@@ -79,18 +88,22 @@ proposed method captures a larger portion of the pathology induced changes.
 \end{tabular}
         &
 \begin{tabular}{l|c|c|c}
+\rowcolor{col3}
 Intensity&
 \includegraphics[width=0.18\linewidth]{cor-mass-intensity} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-intensity} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-intensity} \\ \hline
+\rowcolor{col1}
 Mass&
 \includegraphics[width=0.18\linewidth]{cor-mass-mass} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-mass} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-mass} \\
+\rowcolor{col2}
 Cost&
 \includegraphics[width=0.18\linewidth]{cor-mass-cost} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-cost} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-cost} \\ \hline 
+\rowcolor{white}
         &  Size & Ellipticity & Ellipticity + Size
 \end{tabular} \\
         (a) Data & (b) Spatial Distribution of Correlations
