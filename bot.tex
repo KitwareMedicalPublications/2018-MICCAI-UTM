@@ -16,7 +16,7 @@
 \definecolor{col3}{rgb}{0.582,0.661,0.976}
 \definecolor{white}{rgb}{1,1,1}
 
-\graphicspath{{./Figures/OasisCor/},{./Figures/OasisRegression/},{./Figures/Ellipse/}}
+\graphicspath{{./Figures/},{./Figures/OasisCor/},{./Figures/OasisRegression/},{./Figures/Ellipse/}}
 \DeclareGraphicsExtensions{.pdf,.png}
 
 \begin{document}
@@ -72,31 +72,38 @@ proposed method captures a larger portion of pathology induced changes.
 
 \section{Introduction}
 Neurological disease and disorder manifest in subtle and varied changes in
-brain anatomy. To detect and quantify these changes is a primary goal of
-morphometry based population analysis. 
+brain anatomy that can be non-local in anture and effect volumetric as well as
+shape change. To detect and quantify these changes is a primary goal of
+morphometry based population analysis. We propose a novel morphometry approach
+based on unbalanced optimal transport that yields voxelwise comparison that
+explicitly separates shape from volumetric changes and can take into account
+non-local changes. 
 
-Voxel-based morphometry (VBM) is a popular approach to detect anatomical
-changes by comparing intensities at each voxel after registration of each
-subject in the population to an atlas or template. We propose to use unbalanced
-optimal transport to derive voxel based measures that decouple shape from
-volume changes and mitigates issues with imperfect registration.
-Instead of comparing intensities at each voxel, we derive for each subject two
-new images based on averaging the unbalanced optimal transport solution to each
-other subject. The first image measures and localizes changes in volume by
-capturing the optimal allocation of mass such that resulting balanced optimal
-transport problem has minimal cost. The second image measures and localizes
-changes in shape an location by capturing the amount and distance that mass is
-transported. Figure~\ref{fig:cor-ellipse} illustrates these two measures on a
-toy example of a hundred half ellipses with different ellipticity and volume.
-Correlating the derived measures from the unbalanced optimal transport
-solutions with either ellipticity or total ellipse volume shows that the
-proposed method is capable of correctly attributing changes to either variation
-in shape or size. Intensity based VBM does not indicate the source of the
-changes and results in weak correlation with changes in size.
-\begin{figure}
+Optimal transport, as the name implies, solves the problem of transporting mass
+from a probability measure $\mu$ to a probability measure $\nu$, such that the
+cost of moving mass from $\mu$ to $\nu$ is minimized. Unbalanced optimal
+transport extends optimal transport to measures that do not need to have equal
+mass by adding a mechanism to create and / or destruct mass into the
+optimization problem. The solution of the unbalanced optimal transport yields a
+transport map, or coupling, that measures how much mass is moved between source
+and target locations. We decompose these transport maps to measure for each
+subject, at each voxel, into mass allocation and mass transfer. These two
+measures explicitly separate mass from shape changes and due to the non-local
+nature of optimal transport can take into effect global effects such as
+relative position of anatomical structure, as long as they are not removed
+during the spatial normalization phase.
+
+Figure~\ref{fig:cor-ellipse} illustrates these two measures on a toy example of
+a hundred half ellipses with different ellipticity and volume.  Correlating the
+derived measures from the unbalanced optimal transport solutions with either
+shape or size of the ellipse shows that the proposed method is capable of
+correctly attributing changes to either variation in shape or size.
+Traditional voxel-based morphometry does not indicate the source of the changes
+and results in weak correlation with changes in size.
+\begin{figure}[bht]
+\scriptsize
 \centering
-\begin{tabular}{|c|}
-\hline
+\begin{tabular}{c}
 \begin{tabular}{c||c}
 \begin{tabular}{cc}
 \includegraphics[width=0.1\linewidth]{ellipse0001} &
@@ -109,73 +116,96 @@ changes and results in weak correlation with changes in size.
 \includegraphics[width=0.1\linewidth]{ellipse0008} \\
 %\includegraphics[width=0.1\linewidth]{ellipse0009} & 
 %\includegraphics[width=0.1\linewidth]{ellipse0010} \\ 
+        \multicolumn{2}{c}{ (a) Data }\\
 \end{tabular}
         &
+\begin{tabular}{c}
+\begin{tabular}{lcr}
+\multicolumn{3}{c}{Pearson's r }\\
+        -1 & \includegraphics[width=0.6\linewidth]{colorbar} & 1
+\end{tabular}\\
 \begin{tabular}{l|c|c|c}
-\rowcolor{col3}
+%\rowcolor{col3}\\ 
+        \hline 
 Intensity&
 \includegraphics[width=0.18\linewidth]{cor-mass-intensity} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-intensity} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-intensity} \\ \hline
-\rowcolor{col1}
+%\rowcolor{col1}
 Mass&
 \includegraphics[width=0.18\linewidth]{cor-mass-mass} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-mass} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-mass} \\
-\rowcolor{col2}
+%\rowcolor{col2}
 Cost&
 \includegraphics[width=0.18\linewidth]{cor-mass-cost} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-cost} &
 \includegraphics[width=0.18\linewidth]{cor-rx-ry-mass-cost} \\ \hline 
-\rowcolor{white}
-        &  Size & Ellipticity & Ellipticity + Size
-\end{tabular} \\
-        (a) Data Set Examples & (b) Spatial Distribution of Correlations
+%\rowcolor{white}
+        & (b) Size 
+        & (c) Shape 
+        & (d) Shape + Size 
+\end{tabular}
+\end{tabular}\\
 \end{tabular}
         \\ \hline \hline 
 \begin{tabular}{c|c|c}
 \includegraphics[width=0.3\linewidth]{hist-mass} &
 \includegraphics[width=0.3\linewidth]{hist-ellipticity} &
 \includegraphics[width=0.3\linewidth]{hist-additive} \\ \hline 
-        Size & Ellipticity & Ellipticity + Size
-\end{tabular}\\
-        (c) Smoothed Correlation Counts\\
-        \hline
+        (e) Size & (f) Shape & (g) Shape + Size
+\end{tabular}
 \end{tabular}
 \caption{\label{fig:cor-ellipse}
 Illustration of unbalanced optimal transport on a (a) toy data set of a 100
-half ellipses with different minor, major radii and width.  (b) Spatial
-correlations of total size (number of black pixels), ellipticity (ratio of the
-minor and major radii) and sum of size and ellipticity to (top) raw pixel
-intensity values, (middle) transport mass imbalances and (bottom)
-transport costs. (c) Smoothed counts of Pearson's r correlation from the
-spatial correlations ( colors correspond to the color of the rows in (b)). The
-optimal transport approach identifies the changes in total size in the mass
-imbalance with much stronger correlations than the intensity based approach.
-Ellipticity is captured in both transport cost and intensity, with slightly
-stronger correlations with transport cost.The shape versus mass changes in
-correlations with size versus ellipticity are clearly identified in the optimal
-transport based approach, while the intensity based approach alone does not
-indicate the source of the correlations.  Correlation to an additive shape and
-mass effect are correctly identified in both transport cost and mass imbalance,
-while the intensity values alone lead to weak correlations.
+half ellipses with different minor, major radii and width.  Spatial
+correlations of (b) size (number of black pixels), (c) shape (ratio of the
+minor and major radii) and (d) sum of size and shape to pixel
+intensity values, (middle) mass allocation and (bottom) transport costs.
+(f,g,h) Smoothed counts of Pearson's r correlation from the spatial
+correlations. The optimal transport approach identifies the changes in size in
+the mass imbalance with much stronger correlations than the intensity based
+approach.  Shape is captured in both transport cost and intensity, with
+slightly stronger correlations with transport cost. Correlation to an additive
+shape and mass effect are correctly identified in both transport cost and mass
+imbalance, while the intensity values alone lead to weak correlations. The
+proposed method correctly identifies shape versus mass effects.  
 }
 \end{figure}
 
+
 \section{Related Work}
+
+Optimal transport and the associated Wasserstein metric, also referred to as
+Earth-movers distance, have been extensively used in computer vision
+applications. Recent advances that permit fast computation of optimal transport
+maps on large data sets lead to a flurry of research in machine learning and 
+%Both the mass allocation take into account global effects, in particular the
+%shape measures can capture non-local changes, such as
+%relative positions of anatomical structures as long as they are no removed
+%during the spatial normalization step.  
+
+Voxel-based morphometry (VBM) is a popular approach to detect anatomical
+changes by comparing, potentially modulated, intensities at each voxel after
+spatial normalization. Similarly Tensor-based morphometry (TBM) compares
+measures derived, typically the Jacobian determinant, from a non-linear spatial
+normalization that aligns the subjects of the population to a single template
+at each voxel. Deformation-based morphometry (DBM) address the issue of finding
+global effects but are more difficult to interpret and lack the localization of
+the statistical parametric maps (SPM) resulting from voxelwise comparisons.
+
 
 %VBM
 Voxel-based morphometry (VBM) yields spatially localized changes in brain
 anatomy but has been shown to be sensitive to mis-registration and is incapable
 of discovering globally occurring changes. 
 %DBM
-Deformation-based morphometry (DBM) takes
-a more global approach by analysis of deformation fields. While DBM yields
-overall measures of changes in shape, the results are sensitive to the
-parametrization and regularization of the deformation field and require
-delineation of regions of interest to average deformation field statistics. A
-priori definition of regions defeats the purpose of automatic discovery of
-relevant anatomical changes. 
+Deformation-based morphometry (DBM) takes a more global approach by analysis of
+deformation fields. While DBM yields overall measures of changes in shape, the
+results are sensitive to the parametrization and regularization of the
+deformation field and require delineation of regions of interest to average
+deformation field statistics. A priori definition of regions defeats the
+purpose of automatic discovery of relevant anatomical changes. 
 %Manifold model
 The manifold model approach extends DBM to allow for possible non-linear
 relationships in the data and avoids having to select a template.
@@ -191,9 +221,21 @@ compared stem from a global optimization problem which mitigates some of the
 issues of a traditional VBM and introduces a way that moves towards separating
 effects due to changes in volume from effects due to changes in shape.
 
+Optimal transport is not sensitive to small misalignments in the spatial
+normalization step which result only in a small transport cost of shifting mass
+a short distance. As in VBM the spatial normalization introduces an invariance
+to the spatial affect that are normalized, these can be introduced as in VBM by
+modulating the mass with the Jacobian determinant to correct for volume changes
+otherwise lost in the spatial normalization step. 
+
+
+
 
 
 \section{Unbalanced Optimal Transport for Population Analysis}
+
+
+
 
 \section{Application to OASIS Brain MRI}
 
@@ -265,9 +307,9 @@ matter, leading to a surplus of gray matter in that area.
 & \parbox[b][4mm]{6mm}{MMSE}
 & \parbox[b][4mm]{6mm}{MMSE\textsuperscript{*}}
 \end{tabular}
-\caption{\label{fig:cor-oasis-white}
+\caption{\label{fig:cor-oasis-gray}
 Correlation of age, MMSE and CDR with optimal transport mass imbalances and
-optimal transport costs of white matter. The columns with a \textsuperscript{*}
+optimal transport costs of gray matter. The columns with a \textsuperscript{*}
 only show the voxels were the correlation has a permutation tested p-value less
 than 0.05  }
 \end{figure}
