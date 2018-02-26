@@ -1,0 +1,18 @@
+
+
+Relation to Voxel based morphometry.
+
+Relation to manifold model approach.
+
+
+Connections:
+------------
+Voxel-based morphometry (local) ->
+Deformation based morphometry (global) ->
+Non-linear manifold model for deformation based morphometry (data driven)
+
+Deformation based difficult to interpret
+
+ 
+
+

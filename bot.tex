@@ -58,17 +58,41 @@ to use unbalanced optimal transport to disentangle shape from mass changes and
 localize those changes. The exploratory analysis approach generates images of
 transport cost and mass changes for each subject in the population.  Using
 voxelwise correlations with disease indicators on these images highlight
-regions of interest in mass or shape changes related to the disease indicator.
-We demonstrate the method on the white and gray matter segmentations from the
+regions of mass or shape changes related to the disease indicator.  We
+demonstrate the method on the white and gray matter segmentations from the
 OASIS brain MRI data set, which includes subject ranging from healthy to mild
 and moderate dementia. The results corroborate known pathology changes related
 to dementia and suggest avenues for further clinical research. Additionally
 regression and permutation testing on the transport cost and mass change images
 improve on existing methods to predict disease measures and indicates that the
-proposed method captures a larger portion of the pathology induced changes.  
+proposed method captures a larger portion of pathology induced changes.
 \end{abstract}
 
+
+
 \section{Introduction}
+Neurological disease and disorder manifest in subtle and varied changes in
+brain anatomy. To detect and quantify these changes is a primary goal of
+morphometry based population analysis. 
+
+Voxel-based morphometry (VBM) is a popular approach to detect anatomical
+changes by comparing intensities at each voxel after registration of each
+subject in the population to an atlas or template. We propose to use unbalanced
+optimal transport to derive voxel based measures that decouple shape from
+volume changes and mitigates issues with imperfect registration.
+Instead of comparing intensities at each voxel, we derive for each subject two
+new images based on averaging the unbalanced optimal transport solution to each
+other subject. The first image measures and localizes changes in volume by
+capturing the optimal allocation of mass such that resulting balanced optimal
+transport problem has minimal cost. The second image measures and localizes
+changes in shape an location by capturing the amount and distance that mass is
+transported. Figure~\ref{fig:cor-ellipse} illustrates these two measures on a
+toy example of a hundred half ellipses with different ellipticity and volume.
+Correlating the derived measures from the unbalanced optimal transport
+solutions with either ellipticity or total ellipse volume shows that the
+proposed method is capable of correctly attributing changes to either variation
+in shape or size. Intensity based VBM does not indicate the source of the
+changes and results in weak correlation with changes in size.
 \begin{figure}
 \centering
 \begin{tabular}{|c|}
@@ -83,8 +107,8 @@ proposed method captures a larger portion of the pathology induced changes.
 \includegraphics[width=0.1\linewidth]{ellipse0006} \\
 \includegraphics[width=0.1\linewidth]{ellipse0007} &
 \includegraphics[width=0.1\linewidth]{ellipse0008} \\
-\includegraphics[width=0.1\linewidth]{ellipse0009} & 
-\includegraphics[width=0.1\linewidth]{ellipse0010} \\ 
+%\includegraphics[width=0.1\linewidth]{ellipse0009} & 
+%\includegraphics[width=0.1\linewidth]{ellipse0010} \\ 
 \end{tabular}
         &
 \begin{tabular}{l|c|c|c}
@@ -106,7 +130,7 @@ Cost&
 \rowcolor{white}
         &  Size & Ellipticity & Ellipticity + Size
 \end{tabular} \\
-        (a) Data & (b) Spatial Distribution of Correlations
+        (a) Data Set Examples & (b) Spatial Distribution of Correlations
 \end{tabular}
         \\ \hline \hline 
 \begin{tabular}{c|c|c}
@@ -115,35 +139,70 @@ Cost&
 \includegraphics[width=0.3\linewidth]{hist-additive} \\ \hline 
         Size & Ellipticity & Ellipticity + Size
 \end{tabular}\\
-        (c) Smoothed Histogram of Correlations\\
+        (c) Smoothed Correlation Counts\\
         \hline
 \end{tabular}
 \caption{\label{fig:cor-ellipse}
 Illustration of unbalanced optimal transport on a (a) toy data set of a 100
-ellipses with different minor and major radii and width.  (b) Correlation
-of total size (number of black pixels), ellipticity (ratio of the minor and major radii)
-and sum of size and ellipticity (top) to raw pixel intensity values, (middle)
-optimal transport mass imbalances and (bottom) optimal transport costs. The
-optimal transport approach correctly identifies changes in size in the mass
-imbalance with stronger correlations than the intensity based approach.
-Ellipticity is strongly captured in both the optimal transport cost and
-the intensity. Some of the ellipticity is also captured in the optimal
-transport mass since larger radii also correlate with an increase in
-size. Correlation to an additive shape and mass effect are correctly
-identified as in both the optimal transport cost and mass imbalance,
-while the intensity values alone lead to weaker correlation without any
-indicator of the driving changes.   }
+half ellipses with different minor, major radii and width.  (b) Spatial
+correlations of total size (number of black pixels), ellipticity (ratio of the
+minor and major radii) and sum of size and ellipticity to (top) raw pixel
+intensity values, (middle) transport mass imbalances and (bottom)
+transport costs. (c) Smoothed counts of Pearson's r correlation from the
+spatial correlations ( colors correspond to the color of the rows in (b)). The
+optimal transport approach identifies the changes in total size in the mass
+imbalance with much stronger correlations than the intensity based approach.
+Ellipticity is captured in both transport cost and intensity, with slightly
+stronger correlations with transport cost.The shape versus mass changes in
+correlations with size versus ellipticity are clearly identified in the optimal
+transport based approach, while the intensity based approach alone does not
+indicate the source of the correlations.  Correlation to an additive shape and
+mass effect are correctly identified in both transport cost and mass imbalance,
+while the intensity values alone lead to weak correlations.
+}
 \end{figure}
 
-\section{Background}
+\section{Related Work}
 
-\subsection{Population Analysis}
+%VBM
+Voxel-based morphometry (VBM) yields spatially localized changes in brain
+anatomy but has been shown to be sensitive to mis-registration and is incapable
+of discovering globally occurring changes. 
+%DBM
+Deformation-based morphometry (DBM) takes
+a more global approach by analysis of deformation fields. While DBM yields
+overall measures of changes in shape, the results are sensitive to the
+parametrization and regularization of the deformation field and require
+delineation of regions of interest to average deformation field statistics. A
+priori definition of regions defeats the purpose of automatic discovery of
+relevant anatomical changes. 
+%Manifold model
+The manifold model approach extends DBM to allow for possible non-linear
+relationships in the data and avoids having to select a template.
+%Visualization
+For both approaches visualization of relevant changes is difficult.
+%OT map based
+In \cite{} propose an optimal transport based approach that is similar to DBM
+but uses a optimal transport map parametrization to a template. The approach 
+%OT voxel based, this work
+The unbalanced optimal transport approach presents a mixture between VBM and
+DBM based methods.  While the resulting analysis is voxelwise, the quantities
+compared stem from a global optimization problem which mitigates some of the
+issues of a traditional VBM and introduces a way that moves towards separating
+effects due to changes in volume from effects due to changes in shape.
 
-\subsection{Optimal Transport}
 
-\section{Optimal Transport for Population Analysis}
+
+\section{Unbalanced Optimal Transport for Population Analysis}
 
 \section{Application to OASIS Brain MRI}
+
+The results on the gray matter mask show an increase in the pons area
+correlated with CDR and even more so with MMSE.  A hypointense T1 signal in the
+pons area has been associated central pontine myelinolysis, which is linked to
+alcoholism. The pons in healthy patients typically identified as white matter,
+the hypointense signal could potentially lead to a identification with gray
+matter, leading to a surplus of gray matter in that area.
 
 \begingroup
 \renewcommand{\arraystretch}{0}
@@ -287,8 +346,14 @@ than 0.05  }
 
 
 \section{Conclusion}
+Combing unbalanced optimal transport with a more globally sensitive analysis.
+I.e. the resulting maps are still voxelwise and should be brought into some
+correspondence or averaged.
 
-- Localized mass preserving
-- Clustering
+Template free approach.
+
+Localized mass preserving
+
+Additional analysis methods: Clustering
 
 \end{document}
