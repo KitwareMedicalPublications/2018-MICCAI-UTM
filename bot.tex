@@ -493,24 +493,27 @@ gray matter related to age, CDR and MMSE.
 \parbox[2mm]{7mm}{\centering CVM }  & 
 \parbox[2mm]{7mm}{\centering $l_1 R^2$} 
         \\ \hline \hline
+\scriptsize
 Age, Manifold LDDMM  & 4.4  & 0.14  & 9.9  & 1.0e-4      & NA    & NA  \\
-Age, Intensity VBM   &      &       &      &             &       &     \\
+Age, Intensity VBM   & 2.4  & 0.86  & 17.4 & $<\epsilon$ & 4.8   & 0.53  \\
 Age, Transport VBM   & 3.1  & 0.74  & 11.1 & $<\epsilon$ & 4.4   & 0.51   \\ \hline
-MMSE, Manifold LDDMM & 3.8  & 0.15  & 20.9 & 1.2e-5      & NA    & NA  \\
-MMSE, Intensity VBM  &      &       &      &             &       &     \\
+MMSE, Manifold LDDMM & 3.8  & 0.15  & 20.9 & 1.2e-5      & NA    & NA    \\
+MMSE, Intensity VBM  & 3.0  & 0.50  &  5.6 & 2.1e-10     & 3.87  & 0.32  \\
 MMSE, Transport VBM  & 3.0  & 0.50  & 11.2 & 3.3e-13     & 3.89  & 0.23  \\ \hline
-CDR, Manifold LDDMM  & 0.35 & 0.20  & 30.0 & 2.4e-7      & NA    & NA  \\
-CDR, Intensity VBM   &      &       &      &             &       &     \\
-CDR, Transport VBM   & 0.26 & 0.61  & 8.47 & 5.2e-15     & 0.34  & 0.36    \\
+CDR, Manifold LDDMM  & 0.35 & 0.20  & 30.0 & 2.4e-7      & NA    & NA    \\
+CDR, Intensity VBM   & 0.19 & 0.79  & 19.5 & $<\epsilon$ & 0.34  & 0.52  \\
+CDR, Transport VBM   & 0.26 & 0.61  & 8.5  & 5.2e-15     & 0.34  & 0.36    \\
 \end{tabular} \\
         \footnotesize{ (a) } & \footnotesize{ (b) }
 \end{tabular}
 \caption{ \label{fig:prediction} Prediction with elastic net and comparison to linear models based on the LDDMM manifold approach.} 
 \end{figure}
 
-MMSE  11 nonzeros ( 1tw/1 3tg / 3, 7mW / 0 )
-CDR 21 nonzeros (3tw / 1, 6tg / 2, 12mw / 0)
-Age 29 nonzeros (4tw / 1, 6tg / 3, 2mg /1, 17mw / 1) 
+MMSE  11 nonzeros ( 1tw / 1, 3tg / 3,  7mW / 0 )
+
+CDR 21 nonzeros   ( 3tw / 1, 6tg / 2, 12mw / 0 )
+
+Age 29 nonzeros   ( 4tw / 1, 6tg / 3,  2mg / 1, 17mw / 1 ) 
 
 mmse permuted p-value 0.03, other 0
 
