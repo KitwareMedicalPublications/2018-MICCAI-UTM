@@ -105,31 +105,24 @@ non-local changes.
 
 Optimal transport, as the name implies, solves the problem of transporting mass
 from a probability measure $\mu$ to a probability measure $\nu$, such that the
-cost of moving mass from $\mu$ to $\nu$ is minimized. Unbalanced optimal
-transport extends optimal transport to measures that do not need to have equal
-mass by adding a mechanism to create and / or destruct mass into the
-optimization problem. The solution of the unbalanced optimal transport yields a
-transport map, or coupling, that measures how much mass is moved between source
-and target locations. We decompose these transport maps to measure for each
-subject, at each voxel, into mass allocation and mass transfer. These two
-measures explicitly separate mass from shape changes and due to the non-local
-nature of optimal transport can take into effect global effects such as
-relative position of anatomical structure,  as long as they are not removed
-during the spatial normalization phase. The method still depends on a rigid
-spatial normalization to bring the subjects into a common coordinate system
-were voxelwise comparisons are feasible. After the spatial normalization the
-optimal transport derived measures do no depend on a template but instead are
-based don averaging pairwise transport maps, which will alleviate bias due to
-registrations to a single template  in other methods. 
+cost of moving mass from the source $\mu$ to the target $\nu$ is minimized.
+Unbalanced optimal transport extends optimal transport to measures that do not
+need to have equal mass by adding a mechanism to create and / or destruct mass
+into the optimization problem. The solution of the unbalanced optimal transport
+yields a transport map, or coupling, that measures how much mass is moved
+between source and target locations. We decompose these transport maps to
+measure for each subject, at each voxel, into mass allocation and mass
+transfer. These two measures explicitly separate mass from shape changes and
+due to the non-local nature of optimal transport can take into effect global
+effects such as relative position of anatomical structure,  as long as they are
+not removed during the spatial normalization phase. The method still depends on
+a rigid spatial normalization to bring the subjects into a common coordinate
+system were voxelwise comparisons are feasible. After the spatial normalization
+the optimal transport derived measures do no depend on a template but instead
+are based don averaging pairwise transport maps, which will alleviate bias due
+to registrations to a single template  in other methods. 
 
-Figure~\ref{fig:cor-ellipse} illustrates these two optimal transport based
-measures on a toy example of a hundred half ellipses with different ellipticity
-and volume.  Correlating the derived measures from the unbalanced optimal
-transport solutions with either shape or size of the ellipse shows that the
-proposed method is capable of correctly attributing changes to either variation
-in shape or size.  Traditional voxel-based morphometry does not indicate the
-source of the changes and results in weak correlation with changes in size.
-\begin{figure}[bht]
+\begin{figure}[b!]
 \scriptsize
 \centering
 \begin{tabular}{c}
@@ -202,6 +195,14 @@ proposed method correctly identifies shape versus mass effects.
 }
 \end{figure}
 
+Figure~\ref{fig:cor-ellipse} illustrates these two optimal transport based
+measures on a toy example of a hundred half ellipses with different ellipticity
+and volume.  Correlating the derived measures from the unbalanced optimal
+transport solutions with either shape or size of the ellipse shows that the
+proposed method is capable of correctly attributing changes to either variation
+in shape or size.  Traditional voxel-based morphometry does not indicate the
+source of the changes and results in weak correlation with changes in size.
+
 We demonstrate the proposed method on white and gray matter masks of the OASIS
 brain data set~\citep{marcus2010open}. We choose to use the gray and white
 matter masks instead of MRI intensity values because of the difficulties in
@@ -268,20 +269,36 @@ otherwise lost in the spatial normalization step.
 
 
 
-\section{Unbalanced Optimal Transport for Population Analysis}
+\section{Unbalanced Optimal Transport Morphometry}
+Morphometry with unbalanced optimal transport follows the standard VBM or TBM
+pipeline, but operates on the mass allocation and tarnsport cost maps derived
+from the solution of unbalanced optimal transport between the subjects:
+\begin{enumerate}
+\item Spatial normalization
+\item White matter, gray matter and CSF segmentation
+\item (optional) Modulation of segmentation by volume changed introduced
+through the spatial normalization.
+\item {\bf Construct optimal transport mass allocation and cost maps}
+\item Smoothing of mass allocation and transport maps
+\item Statistical analysis
+\end{enumerate}
+
+Section~\ref{sec:unbalanced} describes the unbalanced optimal transport problem
+and the construction of the mas allocation and transport cost maps for each
+subject.
+
+
 
 \subsection{Unbalanced Optimal Transport}
-Optimal transport solves for the minimal cost of moving a source probability
-distribution to a target probability distribution given a function that assigns
-costs to moving mass from source to target locations. For two probability
-measures  $\mu$ and $\nu$ on probability spaces ${\Xsp}$ and ${\Ysp}$
-respectively, a coupling of $\mu$ and $\nu$ is a measure $\coupling$ on
-${\Xsp}\times{\Ysp}$ such that the marginals of $\coupling$ are $\mu$ and
-$\nu$. The coupling $\coupling$ defines a {\em transport plan} that captures
-how much mass is transport from any $x \in \Xsp$ to  any $y \in \Ysp$ by
-$\coupling(x, y)$. To define optimal transport and optimal couplings, we need
-a cost function $\cost(x,y)$ on ${\Xsp}\times{\Ysp}$ representing the work or
-cost needed to move a unit of mass from $x$ to $y$. An optimal coupling
+\label{sec:unbalanced}
+For two probability measures  $\mu$ and $\nu$ on probability spaces ${\Xsp}$
+and ${\Ysp}$ respectively, a coupling of $\mu$ and $\nu$ is a measure
+$\coupling$ on ${\Xsp}\times{\Ysp}$ such that the marginals of $\coupling$ are
+$\mu$ and $\nu$. The coupling $\coupling$ defines a {\em transport plan} that
+captures how much mass is transport from any $x \in \Xsp$ to  any $y \in \Ysp$
+by $\coupling(x, y)$. To define optimal transport and optimal couplings, we
+need a cost function $\cost(x,y)$ on ${\Xsp}\times{\Ysp}$ representing the work
+or cost needed to move a unit of mass from $x$ to $y$. An optimal coupling
 $\coupling^*$ minimizes this cost over all choices of couplings
 $\mathcal{C}(\mu,\nu)$ between
 $\mu$ and $\nu$: 
@@ -360,7 +377,7 @@ matter, leading to a surplus of gray matter in that area.
 \begingroup
 \renewcommand{\arraystretch}{0}
 \setlength{\tabcolsep}{0pt}
-\begin{figure}[bth]
+\begin{figure}[b!]
 \centering
 \begin{tabular}{c}
 \begin{tabular}{lcr}
@@ -461,12 +478,6 @@ white and gray matter segmentations.
 A standard VBM analysis is not able to detect the general deterioration for
 gray matter related to age, CDR and MMSE.
 
-\begin{figure}
- \includegraphics[width=25mm]{glmnet-cvm-permutations} 
-\caption{ \label{fig:prediction} Prediction with elastic net and compariosn to LDDMM manifold model based linear models.} 
-\end{figure}
-
-
 
 \begin{figure}
 \scriptsize
@@ -504,6 +515,20 @@ Age 29 nonzeros (4tw / 1, 6tg / 3, 2mg /1, 17mw / 1)
 mmse permuted p-value 0.03, other 0
 
 \section{Conclusion}
+A key observation is that for VBM, TBM and DBM analysis which derive voxelwise
+measures are driven by local image gradients and ultimately, at the voxel
+level, lead to very similar results~\cite[Chaper~6]{frackowiak2004human}.
+Unbalanced optimal transport measures solves a global optimization based on the
+distribution of mass. This global optimization  is insensitive to local shifts
+in boundaries since such shifts only incur a small cost of moving mass locally.
+Large cost of moving mass are due to more significant shifts in the anatomy or
+different distributions of mass among different parts of the anatomy. The
+addition of mass allocation with unbalanced optimal transport captures mass
+difference between subject without potentially confounding effects of shape
+changes in non-linear spatial warps. Furthermore the allocation of mass is not
+driven by the image gradients and thus can be diffuse over a large region
+without the need of a smooth spatial normalization to distribute the image
+gradient driven warp over a larger region.
 
 Unablanced optimal transport is not restricted to be applied to segmentation
 mask, it can be directly applied to graylevel intensities or with an
