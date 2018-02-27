@@ -301,7 +301,7 @@ transport problem is equivalent to the linear program
 \sum_i \coupling(x_i, y_j) = \nu(\{y_j\}) = v(y_j) & \\
  \coupling(x_i,y_j)\ge 0
 \end{cases}\,.
-\label{e:LPformulation}
+\label{eq:balanced}
 \end{equation} 
 
 To extend the formulation to deal with arbitrary positive measures $\mu$ and
@@ -321,7 +321,7 @@ free. The linear program reads:
   \coupling(x_i, y_j) \ge 0 \\
   \coupling(z, x_i) \ge 0
 \end{cases}\,.
-\label{e:LPformulation}
+\label{eq:unbalanced}
 \end{equation} 
 
 This modification results in a standard optimal transport problem through the
@@ -461,21 +461,28 @@ white and gray matter segmentations.
 A standard VBM analysis is not able to detect the general deterioration for
 gray matter related to age, CDR and MMSE.
 
+\begin{figure}
+ \includegraphics[width=25mm]{glmnet-cvm-permutations} 
+\caption{ \label{fig:prediction} Prediction with elastic net and compariosn to LDDMM manifold model based linear models.} 
+\end{figure}
 
 
-\begin{table}
-\centering
+
+\begin{figure}
 \scriptsize
+\begin{tabular}{cc}
+\raisebox{-15mm}{\includegraphics[width=34mm]{glmnet-cvm-permutations}}
+        &
 \begin{tabular}{l|cccc|cc}
-\parbox[2mm]{40mm}{Model}  & 
-\parbox[2mm]{12mm}{\centering Residual} & 
-\parbox[2mm]{8mm}{\centering $R^2$} & 
-\parbox[2mm]{8mm}{\centering F}   & 
-\parbox[2mm]{12mm}{\centering p--value}   & 
-\parbox[2mm]{8mm}{\centering CVM }  & 
-\parbox[2mm]{8mm}{\centering $l_1 R^2$} 
+\parbox[2mm]{33mm}{Model}  & 
+\parbox[2mm]{11mm}{\centering Residual} & 
+\parbox[2mm]{5mm}{\centering $R^2$} & 
+\parbox[2mm]{5mm}{\centering F}   & 
+\parbox[2mm]{11mm}{\centering p--value}   & 
+\parbox[2mm]{7mm}{\centering CVM }  & 
+\parbox[2mm]{7mm}{\centering $l_1 R^2$} 
         \\ \hline \hline
-Age, Manifold LDDM   & 4.4  & 0.14  & 9.9  & 1.0e-4      & NA    & NA  \\
+Age, Manifold LDDMM  & 4.4  & 0.14  & 9.9  & 1.0e-4      & NA    & NA  \\
 Age, Intensity VBM   &      &       &      &             &       &     \\
 Age, Transport VBM   & 3.1  & 0.74  & 11.1 & $<\epsilon$ & 4.4   & 0.51   \\ \hline
 MMSE, Manifold LDDMM & 3.8  & 0.15  & 20.9 & 1.2e-5      & NA    & NA  \\
@@ -484,13 +491,17 @@ MMSE, Transport VBM  & 3.0  & 0.50  & 11.2 & 3.3e-13     & 3.89  & 0.23  \\ \hli
 CDR, Manifold LDDMM  & 0.35 & 0.20  & 30.0 & 2.4e-7      & NA    & NA  \\
 CDR, Intensity VBM   &      &       &      &             &       &     \\
 CDR, Transport VBM   & 0.26 & 0.61  & 8.47 & 5.2e-15     & 0.34  & 0.36    \\
+\end{tabular} \\
+        \footnotesize{ (a) } & \footnotesize{ (b) }
 \end{tabular}
-\end{table}
+\caption{ \label{fig:prediction} Prediction with elastic net and comparison to linear models based on the LDDMM manifold approach.} 
+\end{figure}
 
 MMSE  11 nonzeros ( 1tw/1 3tg / 3, 7mW / 0 )
 CDR 21 nonzeros (3tw / 1, 6tg / 2, 12mw / 0)
 Age 29 nonzeros (4tw / 1, 6tg / 3, 2mg /1, 17mw / 1) 
 
+mmse permuted p-value 0.03, other 0
 
 \section{Conclusion}
 
