@@ -4,7 +4,10 @@
 % version 2.4 for LaTeX2e as of 16. April 2010
 \documentclass{llncs}
 
+\usepackage[cmex10]{amsmath}
+\usepackage{amssymb, amsfonts}
 
+\usepackage{natbib}
 \usepackage{array,multirow}
 \usepackage{color, colortbl}
 \usepackage{makeidx}  
@@ -19,18 +22,39 @@
 \graphicspath{{./Figures/},{./Figures/OasisCor/},{./Figures/OasisRegression/},{./Figures/Ellipse/}}
 \DeclareGraphicsExtensions{.pdf,.png}
 
+
+
+\newcommand{\cost}[0]{\mathtt{c}}
+\newcommand{\couplingcost}[0]{\mathtt{cost}}
+\newcommand{\coupling}[0]{\pi}
+\newcommand{\couplings}[0]{\mathcal{C}}
+\def\argmin{\mathop{\rm argmin}}
+\newcommand{\dimX}{\mathtt{d}}
+\newcommand{\Xsp}{{\mathbf{X}}}
+\newcommand{\Ysp}{{\mathbf{Y}}}
+\newcommand{\lambdaX}{\lambda^\Xsp}
+\newcommand{\lambdaY}{\lambda^\Ysp}
+\newcommand{\Cjk}{C_{j,k}}
+\newcommand{\CjkX}{C^\Xsp_{j,k}}
+\newcommand{\CjkY}{C^\Ysp_{j,k}}
+\newcommand{\psijkX}{\psi^\Xsp_{j,k}}
+\newcommand{\psijkY}{\psi^\Ysp_{j,k}}
+
+
+
+
 \begin{document}
 
 \title{Exploratory Population Analysis with Unbalanced Optimal Transport}
 \titlerunning{Exploratory Population Analysis with Unbalanced Optimal Transport}  
 
-\author{*}%Samuel Gerber, Marc Niethammer, Martin Styner, Stephen Aylward}
-\authorrunning{*}%Gerber et al.} 
-\institute{*}%Kitware Inc, Carborro NC 27510, USA,\\
-\email{*}%samuel.gerber@kitware.com}
+\author{***, ***, ***, ***, ***}%Samuel Gerber, Marc Niethammer, Martin Styner, Stephen Aylward}
+\authorrunning{***}%Gerber et al.} 
+\institute{***\\%Kitware Inc, Carborro NC 27510, USA,\\
+\email{***@***.**}%samuel.gerber@kitware.com}
 \and
-*%University of North Carolina, Chapel Hill NC 27504, USA}
-
+***%University of North Carolina, Chapel Hill NC 27504, USA}
+}
 
 \maketitle              
 
@@ -90,16 +114,21 @@ and target locations. We decompose these transport maps to measure for each
 subject, at each voxel, into mass allocation and mass transfer. These two
 measures explicitly separate mass from shape changes and due to the non-local
 nature of optimal transport can take into effect global effects such as
-relative position of anatomical structure, as long as they are not removed
-during the spatial normalization phase.
+relative position of anatomical structure,  as long as they are not removed
+during the spatial normalization phase. The method still depends on a rigid
+spatial normalization to bring the subjects into a common coordinate system
+were voxelwise comparisons are feasible. After the spatial normalization the
+optimal transport derived measures do no depend on a template but instead are
+based don averaging pairwise transport maps, which will alleviate bias due to
+registrations to a single template  in other methods. 
 
-Figure~\ref{fig:cor-ellipse} illustrates these two measures on a toy example of
-a hundred half ellipses with different ellipticity and volume.  Correlating the
-derived measures from the unbalanced optimal transport solutions with either
-shape or size of the ellipse shows that the proposed method is capable of
-correctly attributing changes to either variation in shape or size.
-Traditional voxel-based morphometry does not indicate the source of the changes
-and results in weak correlation with changes in size.
+Figure~\ref{fig:cor-ellipse} illustrates these two optimal transport based
+measures on a toy example of a hundred half ellipses with different ellipticity
+and volume.  Correlating the derived measures from the unbalanced optimal
+transport solutions with either shape or size of the ellipse shows that the
+proposed method is capable of correctly attributing changes to either variation
+in shape or size.  Traditional voxel-based morphometry does not indicate the
+source of the changes and results in weak correlation with changes in size.
 \begin{figure}[bht]
 \scriptsize
 \centering
@@ -173,6 +202,13 @@ proposed method correctly identifies shape versus mass effects.
 }
 \end{figure}
 
+We demonstrate the proposed method on white and gray matter masks of the OASIS
+brain data set~\citep{marcus2010open}. We choose to use the gray and white
+matter masks instead of MRI intensity values because of the difficulties in
+normalizing the intensities across subjects. However, the method can without
+modification be applied to continuous graylevel values or with the definition
+of a corresponding cost function even to vector or tensor valued measures. The
+only requirement is that the measurement are commensurable across subjects.
 
 \section{Related Work}
 
@@ -233,6 +269,71 @@ otherwise lost in the spatial normalization step.
 
 
 \section{Unbalanced Optimal Transport for Population Analysis}
+Optimal transport is the problem of minimizing the cost of moving a source
+probability distribution to a target probability distribution given a function
+that assigns costs to moving mass from source to target locations.   For two
+probability measures  $\mu$ and $\nu$ on probability spaces ${\Xsp}$ and
+${\Ysp}$ respectively, a coupling of $\mu$ and $\nu$ is a measure $\coupling$
+on ${\Xsp}\times{\Ysp}$ such that the marginals of $\coupling$ are $\mu$ and
+$\nu$. To define optimal transport and optimal couplings, we need a cost
+function $\cost(x,y)$ on ${\Xsp}\times{\Ysp}$ representing the work or cost
+needed to move a unit of mass from $x$ to $y$. An optimal coupling $\coupling^*$
+minimizes this cost over all choices of couplings $\mathcal{C}(\mu,\nu)$ between
+$\mu$ and $\nu$: 
+\begin{equation}
+\coupling^*=\arg\min_{\coupling\in\mathcal{C}(\mu,\nu)}\left(\int_{{\Xsp}}\int_{{\Xsp}}
+\cost(x,y)  d\coupling(x,y)\right)^{\frac1p}\,.  
+\end{equation}
+
+For two discrete distributions $\mu = \sum_1^n w(x_i) \delta(x_i)$ and $ \nu =
+\sum_1^m v(y_i) \delta(y_i)$ with $\sum w(x_i) = \sum v(y_i) = 1$ the optimal
+transport problem is equivalent to the linear program 
+\begin{equation}
+\min_\coupling \sum_{\substack{i=1,\dots,n\\ j=1,\dots,m}} 
+      \cost(x_i, y_j) \coupling(x_i, y_j) \quad \text{s.t.}\quad 
+\begin{cases}
+\sum_j \coupling(x_i, y_j) = \mu(\{x_i\}) = w(x_i) & \\ 
+\sum_i \coupling(x_i, y_j) = \nu(\{y_j\}) = v(y_j) & \\
+ \coupling(x_i,y_j)\ge 0
+\end{cases}\,.
+\label{e:LPformulation}
+\end{equation} 
+The solution is called an optimal coupling $\coupling^*$, and the minimum value
+attained at $\coupling^*$, is called the cost of $\pi^*$, or the optimal cost
+of the transport problem, and is denoted by
+$\couplingcost(\coupling^*)=\sum_{i,j} \cost(x_i,y_j)\pi^*(x_i,y_j)$. The
+constraints enforce that $\coupling$ is a coupling. The variables
+$\coupling(x_i, y_j)$ correspond to the amount of mass transported from source
+$x_i$ to target $y_j$, at cost $\cost(x_i, y_j)$.
+
+To extend the formulation to deal with arbitrary positive measures $\mu$ and
+$\nu$ which do not sum to one the linear program is modified to allow for the
+creation of mass. Without loss of generality $\sum_1^n w(x_i)  - \sum_1^m
+v(y_i) = \delta \ge 0$, the linear program is modified to allow for the
+creation of mass at locations $x_i$ by adding a new source location $z$ and
+constraints that amount to adding at most $w(x_i)$ to any location $x_i$ for
+free. The linear program reads: 
+\begin{equation}
+\min_\coupling \sum_{\substack{i=1,\dots,n\\ j=1,\dots,m}} 
+      \cost(x_i, y_j) \coupling(x_i, y_j) \quad \text{s.t.}\quad 
+\begin{cases}
+  \sum_j \coupling(x_i, y_j) + \coupling(z, x_i) = \mu(\{x_i\}) = w(x_i) & \\ 
+  \sum_i \coupling(x_i, y_j) = \nu(\{y_j\}) = v(y_j) & \\
+  \sum_i \coupling(z, x_i)  = \delta \\
+  \coupling(x_i, y_j) \ge 0 \\
+  \coupling(z, x_i) \ge 0
+\end{cases}\,.
+\label{e:LPformulation}
+\end{equation} 
+
+This modification results in a standard optimal transport problem through the
+addition of target location $z$ that can receive $\delta$ mass at zero cost.
+This permits to solve the optimal transport problem with fast approximation
+algorithms for large data sets such as the Sinkhorn approach by~\cite{cutuiri:}
+or the multiscale strategies by~\citet{gerber:jmlr17}. 
+
+
+\subsection{Morphometry Pipeline}
 
 
 
@@ -249,7 +350,7 @@ matter, leading to a surplus of gray matter in that area.
 \begingroup
 \renewcommand{\arraystretch}{0}
 \setlength{\tabcolsep}{0pt}
-\begin{figure}[!b]
+\begin{figure}[bth]
 \centering
 \begin{tabular}{l|cc|cc|cc} 
 \parbox[t]{4mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Mass Imbalance}}}&
@@ -318,7 +419,7 @@ than 0.05  }
 \begingroup
 \renewcommand{\arraystretch}{0}
 \setlength{\tabcolsep}{0pt}
-\begin{figure}[!b]
+\begin{figure}[bth]
 \centering
 \begin{tabular}{l|cc|cc|cc}
 \parbox[t]{4mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Mass Imbalance}}}&
@@ -388,14 +489,22 @@ than 0.05  }
 
 
 \section{Conclusion}
-Combing unbalanced optimal transport with a more globally sensitive analysis.
+
+Unablanced optimal transport is not restricted to be applied to segmentation
+mask, it can be directly applied to graylevel intensities or with an
+appropriate cost function to diffusion tensors. 
+
+
+Combining unbalanced optimal transport with a more globally sensitive analysis.
 I.e. the resulting maps are still voxelwise and should be brought into some
 correspondence or averaged.
-
-Template free approach.
 
 Localized mass preserving
 
 Additional analysis methods: Clustering
+
+\bibliographystyle{apalike}
+\bibliography{bot.bib,optimal-transport}
+
 
 \end{document}
