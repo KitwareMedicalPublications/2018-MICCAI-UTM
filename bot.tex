@@ -269,23 +269,28 @@ otherwise lost in the spatial normalization step.
 
 
 \section{Unbalanced Optimal Transport for Population Analysis}
-Optimal transport is the problem of minimizing the cost of moving a source
-probability distribution to a target probability distribution given a function
-that assigns costs to moving mass from source to target locations.   For two
-probability measures  $\mu$ and $\nu$ on probability spaces ${\Xsp}$ and
-${\Ysp}$ respectively, a coupling of $\mu$ and $\nu$ is a measure $\coupling$
-on ${\Xsp}\times{\Ysp}$ such that the marginals of $\coupling$ are $\mu$ and
-$\nu$. To define optimal transport and optimal couplings, we need a cost
-function $\cost(x,y)$ on ${\Xsp}\times{\Ysp}$ representing the work or cost
-needed to move a unit of mass from $x$ to $y$. An optimal coupling $\coupling^*$
-minimizes this cost over all choices of couplings $\mathcal{C}(\mu,\nu)$ between
+
+\subsection{Unbalanced Optimal Transport
+Optimal transport solves for the minimal cost of moving a source probability
+distribution to a target probability distribution given a function that assigns
+costs to moving mass from source to target locations. For two probability
+measures  $\mu$ and $\nu$ on probability spaces ${\Xsp}$ and ${\Ysp}$
+respectively, a coupling of $\mu$ and $\nu$ is a measure $\coupling$ on
+${\Xsp}\times{\Ysp}$ such that the marginals of $\coupling$ are $\mu$ and
+$\nu$. The coupling $\coupling$ defines a {\em transport plan} that captures
+how much mass is transport from any $x \in \Xsp$ to  any $y \in \Ysp$ by
+$\copiuling(x, y)$. To define optimal transport and optimal couplings, we need
+a cost function $\cost(x,y)$ on ${\Xsp}\times{\Ysp}$ representing the work or
+cost needed to move a unit of mass from $x$ to $y$. An optimal coupling
+$\coupling^*$ minimizes this cost over all choices of couplings
+$\mathcal{C}(\mu,\nu)$ between
 $\mu$ and $\nu$: 
 \begin{equation}
-\coupling^*=\arg\min_{\coupling\in\mathcal{C}(\mu,\nu)}\left(\int_{{\Xsp}}\int_{{\Xsp}}
-\cost(x,y)  d\coupling(x,y)\right)^{\frac1p}\,.  
+  \coupling^*= \argmin_{\coupling\in\mathcal{C}(\mu,\nu)} \int_{{\Xsp}}\int_{{\Xsp}}
+\cost(x,y)  d\coupling(x,y) \,.  
 \end{equation}
 
-For two discrete distributions $\mu = \sum_1^n w(x_i) \delta(x_i)$ and $ \nu =
+For discrete distributions $\mu = \sum_1^n w(x_i) \delta(x_i)$ and $ \nu =
 \sum_1^m v(y_i) \delta(y_i)$ with $\sum w(x_i) = \sum v(y_i) = 1$ the optimal
 transport problem is equivalent to the linear program 
 \begin{equation}
@@ -298,18 +303,11 @@ transport problem is equivalent to the linear program
 \end{cases}\,.
 \label{e:LPformulation}
 \end{equation} 
-The solution is called an optimal coupling $\coupling^*$, and the minimum value
-attained at $\coupling^*$, is called the cost of $\pi^*$, or the optimal cost
-of the transport problem, and is denoted by
-$\couplingcost(\coupling^*)=\sum_{i,j} \cost(x_i,y_j)\pi^*(x_i,y_j)$. The
-constraints enforce that $\coupling$ is a coupling. The variables
-$\coupling(x_i, y_j)$ correspond to the amount of mass transported from source
-$x_i$ to target $y_j$, at cost $\cost(x_i, y_j)$.
 
 To extend the formulation to deal with arbitrary positive measures $\mu$ and
 $\nu$ which do not sum to one the linear program is modified to allow for the
 creation of mass. Without loss of generality $\sum_1^n w(x_i)  - \sum_1^m
-v(y_i) = \delta \ge 0$, the linear program is modified to allow for the
+v(y_i) = \Delta \ge 0$, the linear program is modified to allow for the
 creation of mass at locations $x_i$ by adding a new source location $z$ and
 constraints that amount to adding at most $w(x_i)$ to any location $x_i$ for
 free. The linear program reads: 
@@ -319,7 +317,7 @@ free. The linear program reads:
 \begin{cases}
   \sum_j \coupling(x_i, y_j) + \coupling(z, x_i) = \mu(\{x_i\}) = w(x_i) & \\ 
   \sum_i \coupling(x_i, y_j) = \nu(\{y_j\}) = v(y_j) & \\
-  \sum_i \coupling(z, x_i)  = \delta \\
+  \sum_i \coupling(z, x_i)  = \Delta \\
   \coupling(x_i, y_j) \ge 0 \\
   \coupling(z, x_i) \ge 0
 \end{cases}\,.
@@ -327,13 +325,25 @@ free. The linear program reads:
 \end{equation} 
 
 This modification results in a standard optimal transport problem through the
-addition of target location $z$ that can receive $\delta$ mass at zero cost.
-This permits to solve the optimal transport problem with fast approximation
-algorithms for large data sets such as the Sinkhorn approach by~\cite{cutuiri:}
-or the multiscale strategies by~\citet{gerber:jmlr17}. 
+addition of target location $z$ that can receive $\delta$ mass at zero cost
+from any source location.  This permits to solve the optimal transport problem
+with fast approximation algorithms for large data sets such as the Sinkhorn
+approach by~\cite{cutuiri:} or the multiscale strategies
+by~\citet{gerber:jmlr17}. 
+
+An arbitrary cost $\cost(z, x_i)$ can be assigned to allocate mass, and $z$
+does not need to be restricted to receive only $\Delta$ amount of mass,
+striking a trade-off between the creation of mass and the movement of mass. For
+our application, we choose the allocation of mass at zero cost but only allow
+for the allocation of $\Delta$ mass. This forces all mass in the target
+location to be matched to a source location location and distribute the
+allocated the mass in such a manner that cost of moving the remaining mass is
+minimized.
+
+The variable $z$ captures
 
 
-\subsection{Morphometry Pipeline}
+\subsection{Morphometry}
 
 
 
@@ -499,7 +509,16 @@ Combining unbalanced optimal transport with a more globally sensitive analysis.
 I.e. the resulting maps are still voxelwise and should be brought into some
 correspondence or averaged.
 
-Localized mass preserving
+The unbalanced optimal transport forces the creation of mass based on global
+mass imbalance between the source and target measures. The approach can be
+localized by enforcing regional mass imbalance correction, this might be
+sensible to force mass allocation within anatomical corresponding regions and not
+allow for redistribution across anatomical different locations. This can be
+implement by explicitly adding spatially localized constraint in the same
+fashion as the global constrain in equation~\ref{eq:unbalanced}. Alternatively
+localization in a more diffuse manner is achieved by adding a cost to
+allocation of mass, which effectively will avoid moving mass further than the
+allocation penalty since it will be cheaper to create mass in the vicinity.
 
 Additional analysis methods: Clustering
 
