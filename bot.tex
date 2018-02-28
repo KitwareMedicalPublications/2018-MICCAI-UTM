@@ -171,11 +171,13 @@ Cost&
 \end{tabular}\\
 \end{tabular}
         \\ \hline \hline 
-\begin{tabular}{c|c|c}
-\includegraphics[width=0.3\linewidth]{hist-mass} &
-\includegraphics[width=0.3\linewidth]{hist-ellipticity} &
-\includegraphics[width=0.3\linewidth]{hist-additive} \\ \hline 
-        (e) Size & (f) Shape & (g) Shape + Size
+\begin{tabular}{c|c|cr}
+\includegraphics[width=0.25\linewidth]{hist-mass} &
+\includegraphics[width=0.25\linewidth]{hist-ellipticity} &
+\includegraphics[width=0.25\linewidth]{hist-additive} &
+\includegraphics[width=0.15\linewidth]{legend} 
+  \\ \hline 
+	(e) Size & (f) Shape & (g) Shape + Size &
 \end{tabular}
 \end{tabular}
 \caption{\label{fig:cor-ellipse}
@@ -529,25 +531,26 @@ based approach in~\cite{gerber2010manifold}.
 \begin{tabular}{cc}
 \raisebox{-15mm}{\includegraphics[width=34mm]{glmnet-cvm-permutations}}
         &
-\begin{tabular}{l|cccc|cc}
+\begin{tabular}{l|cccc|ccc}
 \parbox[2mm]{33mm}{Model}  & 
 \parbox[2mm]{11mm}{\centering Residual} & 
 \parbox[2mm]{5mm }{\centering $R^2$} & 
 \parbox[2mm]{5mm }{\centering F}   & 
 \parbox[2mm]{11mm}{\centering p--value}   & 
 \parbox[2mm]{7mm }{\centering CVM }  & 
-\parbox[2mm]{7mm }{\centering $l_1 R^2$} 
+\parbox[2mm]{7mm }{\centering $l_1 R^2$} &  
+\parbox[2mm]{7mm }{\centering NNZ} 
         \\ \hline \hline
 \scriptsize
-Age, Manifold LDDMM  & 4.4  & 0.14  & 9.9  & 1.0e-4      & NA    & NA  \\
-Age, Intensity VBM   & 2.4  & 0.86  & 17.4 & $<\epsilon$ & 4.8   & 0.53  \\
-Age, Transport VBM   & 3.1  & 0.74  & 11.1 & $<\epsilon$ & 4.4   & 0.51   \\ \hline
-MMSE, Manifold LDDMM & 3.8  & 0.15  & 20.9 & 1.2e-5      & NA    & NA    \\
-MMSE, Intensity VBM  & 3.0  & 0.50  &  5.6 & 2.1e-10     & 3.87  & 0.32  \\
-MMSE, Transport VBM  & 3.0  & 0.50  & 11.2 & 3.3e-13     & 3.89  & 0.23  \\ \hline
-CDR, Manifold LDDMM  & 0.35 & 0.20  & 30.0 & 2.4e-7      & NA    & NA    \\
-CDR, Intensity VBM   & 0.19 & 0.79  & 19.5 & $<\epsilon$ & 0.34  & 0.52  \\
-CDR, Transport VBM   & 0.26 & 0.61  & 8.5  & 5.2e-15     & 0.34  & 0.36    \\
+  Age, Manifold LDDMM  & 4.4  & 0.14  & 9.9  & 1.0e-4      & NA    & NA   & NA  \\
+  Age, Intensity VBM   & 2.4  & 0.86  & 17.4 & $<\epsilon$ & 4.8   & 0.53 & 34  \\
+  Age, Transport VBM   & 3.1  & 0.74  & 11.1 & $<\epsilon$ & 4.4   & 0.51 & 29  \\ \hline
+  MMSE, Manifold LDDMM & 3.8  & 0.15  & 20.9 & 1.2e-5      & NA    & NA   & NA \\
+  MMSE, Intensity VBM  & 3.0  & 0.50  &  5.6 & 2.1e-10     & 3.87  & 0.32 & 23 \\
+  MMSE, Transport VBM  & 3.0  & 0.50  & 11.2 & 3.3e-13     & 3.89  & 0.23 & 11 \\ \hline
+  CDR, Manifold LDDMM  & 0.35 & 0.20  & 30.0 & 2.4e-7      & NA    & NA   & NA \\
+  CDR, Intensity VBM   & 0.19 & 0.79  & 19.5 & $<\epsilon$ & 0.34  & 0.52 & 23\\
+  CDR, Transport VBM   & 0.26 & 0.61  & 8.5  & 5.2e-15     & 0.34  & 0.36 & 21  \\
 \end{tabular} \\
         \footnotesize{ (a) } & \footnotesize{ (b) }
 \end{tabular}
@@ -565,20 +568,15 @@ mmse permuted p-value 0.03, other 0
 
 \section{Conclusion}
 
-Unablanced optimal transport is not restricted to be applied to segmentation
-mask, it can be directly applied to graylevel intensities or with an
+Unbalanced optimal transport is not restricted to be applied to segmentation
+mask, it can be directly applied to gray level intensities or with an
 appropriate cost function to diffusion tensors. 
 
-
-Combining unbalanced optimal transport with a more globally sensitive analysis.
-I.e. the resulting maps are still voxelwise and should be brought into some
-correspondence or averaged.
-
-The unbalanced optimal transport forces the creation of mass based on global
+The unbalanced optimal transport forces the allocation of mass based on global
 mass imbalance between the source and target measures. The approach can be
 localized by enforcing regional mass imbalance correction, this might be
-sensible to force mass allocation within anatomical corresponding regions and not
-allow for redistribution across anatomical different locations. This can be
+sensible to force mass allocation within anatomical corresponding regions and
+not allow for redistribution across anatomical different locations. This can be
 implement by explicitly adding spatially localized constraint in the same
 fashion as the global constrain in equation~\ref{eq:unbalanced}. Alternatively
 localization in a more diffuse manner is achieved by adding a cost to
