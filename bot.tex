@@ -258,20 +258,20 @@ compared stem from a global optimization problem which mitigates some of the
 issues of a traditional VBM and introduces a way that moves towards separating
 effects due to changes in volume from effects due to changes in shape.
 
-Optimal transport is not sensitive to small misalignments in the spatial
-normalization step which result only in a small transport cost of shifting mass
-a short distance. As in VBM the spatial normalization introduces an invariance
-to the spatial affect that are normalized, these can be introduced as in VBM by
-modulating the mass with the Jacobian determinant to correct for volume changes
-otherwise lost in the spatial normalization step. 
+%Optimal transport is not sensitive to small misalignments in the spatial
+%normalization step which result only in a small transport cost of shifting mass
+%a short distance. As in VBM the spatial normalization introduces an invariance
+%to the spatial affect that are normalized, these can be introduced as in VBM by
+%modulating the mass with the Jacobian determinant to correct for volume changes
+%otherwise lost in the spatial normalization step. 
 
 
 
 
 
 \section{Unbalanced Optimal Transport Morphometry}
-Morphometry with unbalanced optimal transport follows the standard VBM or TBM
-pipeline, but operates on the mass allocation and tarnsport cost maps derived
+Morphometry with unbalanced optimal transport follows the standard morphometry
+pipeline, but operates on the mass allocation and transport cost maps derived
 from the solution of unbalanced optimal transport between the subjects:
 \begin{enumerate}
 \item Spatial normalization
@@ -284,8 +284,8 @@ through the spatial normalization.
 \end{enumerate}
 
 Section~\ref{sec:unbalanced} describes the unbalanced optimal transport problem
-and the construction of the mas allocation and transport cost maps for each
-subject.
+and Section~\ref{sec:mass} the construction of the mass allocation and
+transport cost maps for each subject.
 
 
 
@@ -323,44 +323,49 @@ transport problem is equivalent to the linear program
 
 To extend the formulation to deal with arbitrary positive measures $\mu$ and
 $\nu$ which do not sum to one the linear program is modified to allow for the
-creation of mass. Without loss of generality $\sum_1^n w(x_i)  - \sum_1^m
-v(y_i) = \Delta \ge 0$, the linear program is modified to allow for the
-creation of mass at locations $x_i$ by adding a new source location $z$ and
-constraints that amount to adding at most $w(x_i)$ to any location $x_i$ for
-free. The linear program reads: 
+creation of mass. Define the mass imbalance $\Delta = \sum_1^n v(y_i)  -
+\sum_1^m w(x_i)$, the linear program is modified to allow for the creation of
+mass at locations $x_i$ by adding a new source location $z$ and target location
+and constraints that amount to adding or removing at most $w(x_i)$ to any
+location $x_i$ for free. The linear program reads: 
 \begin{equation}
 \min_\coupling \sum_{\substack{i=1,\dots,n\\ j=1,\dots,m}} 
       \cost(x_i, y_j) \coupling(x_i, y_j) \quad \text{s.t.}\quad 
 \begin{cases}
-  \sum_j \coupling(x_i, y_j) + \coupling(z, x_i) = \mu(\{x_i\}) = w(x_i) & \\ 
-  \sum_i \coupling(x_i, y_j) = \nu(\{y_j\}) = v(y_j) & \\
-  \sum_i \coupling(z, x_i)  = \Delta \\
+  \sum_j \coupling(x_i, y_j)  = \mu(\{x_i\}) = w(x_i) & \\ 
+  \sum_i \coupling(x_i, y_j) + \coupling(z, y_j)= \nu(\{y_j\}) = v(y_j) & \\
+  \sum_j \coupling(z, y_j)  = \Delta \\
   \coupling(x_i, y_j) \ge 0 \\
-  \coupling(z, x_i) \ge 0
 \end{cases}\,.
 \label{eq:unbalanced}
 \end{equation} 
 
 This modification results in a standard optimal transport problem through the
-addition of target location $z$ that can receive $\delta$ mass at zero cost
-from any source location.  This permits to solve the optimal transport problem
-with fast approximation algorithms for large data sets such as the Sinkhorn
-approach by~\cite{cutuiri:} or the multiscale strategies
-by~\citet{gerber:jmlr17}. 
+addition of target location $z$ that can receive or deliver $\Delta$ mass at
+zero cost to or from any target location.  Thus, the unbalanced optimal
+transport can with only minor modifications be solved by fast approximation
+algorithms for large data sets such as the Sinkhorn approach
+by~\cite{cuturi2013sinkhorn} or the multiscale strategies
+by~\citet{gerber2017multiscale}. 
 
-An arbitrary cost $\cost(z, x_i)$ can be assigned to allocate mass, and $z$
-does not need to be restricted to receive only $\Delta$ amount of mass,
-striking a trade-off between the creation of mass and the movement of mass. For
-our application, we choose the allocation of mass at zero cost but only allow
-for the allocation of $\Delta$ mass. This forces all mass in the target
-location to be matched to a source location location and distribute the
+An arbitrary cost $\cost(z, y_j)$ can be assigned to allocate mass, and $z$
+does not need to be restricted to only create or remove $\Delta$ amount of
+mass, striking a trade-off between the cost of creating mass and the cost of
+moving mass. For our application, we choose the allocation of mass at zero cost
+but only allow for the allocation of $\Delta$ mass. This forces all mass in the
+target location to be matched to a source location location and distribute the
 allocated the mass in such a manner that cost of moving the remaining mass is
 minimized.
 
-The variable $z$ captures
+\subsection{Mass Allocation and Transport Cost Construction}
+To construct the voxelwise mass allocation and transport cost measures we solve
+for transport plans $\coupling^*_{i,j}$ between all subjects $X_i$ and $X_j$.  
+The variable $z$ in equation~\ref{eq:unbalanced} captures the amount of mass
+allocated when moving mass from $X_i$ to $X_j$. Denote by $z_{i, j}$ the mass
+allocation variable associated with the optimal transport plan
+$\coupling^*_{i,j}$.  By construction $\coupling^*_{i,j}(z_{i,j}, y) =
+-\coupling^*_{j,i}(z_{j,i}, x)$ for any $x \in X_i$ and $y \in X_j$.  
 
-
-\subsection{Morphometry}
 
 
 
@@ -373,11 +378,10 @@ pons area has been associated central pontine myelinolysis, which is linked to
 alcoholism. The pons in healthy patients typically identified as white matter,
 the hypointense signal could potentially lead to a identification with gray
 matter, leading to a surplus of gray matter in that area.
-
 \begingroup
 \renewcommand{\arraystretch}{0}
 \setlength{\tabcolsep}{0pt}
-\begin{figure}[b!]
+\begin{figure}[tb]
 \centering
 \begin{tabular}{c}
 \begin{tabular}{lcr}
@@ -388,76 +392,76 @@ matter, leading to a surplus of gray matter in that area.
 \end{tabular}\\
 \begin{tabular}{l|cc|cc|cc} 
 \parbox[t]{4mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Voxel Intensity}}}&
-\includegraphics[width=0.16\linewidth]{cor-axial-age-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-age-t-iW} &
-\includegraphics[width=0.16\linewidth]{cor-axial-cdr-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-cdr-t-iW} &
-\includegraphics[width=0.16\linewidth]{cor-axial-mmse-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-mmse-t-iW} \\ 
+\includegraphics[width=0.14\linewidth]{cor-axial-age-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-age-t-iW} &
+\includegraphics[width=0.14\linewidth]{cor-axial-cdr-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-cdr-t-iW} &
+\includegraphics[width=0.14\linewidth]{cor-axial-mmse-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-mmse-t-iW} \\ 
 %
         &
-\includegraphics[width=0.16\linewidth]{cor-coronal-age-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-age-t-iW} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-cdr-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-cdr-t-iW} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-mmse-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-mmse-t-iW} \\ 
+\includegraphics[width=0.14\linewidth]{cor-coronal-age-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-age-t-iW} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-cdr-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-cdr-t-iW} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-mmse-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-mmse-t-iW} \\ 
 %
         &
-\includegraphics[width=0.16\linewidth]{cor-sagital-age-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-age-t-iW} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-cdr-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-cdr-t-iW} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-mmse-t-iG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-mmse-t-iW} \\ \hline \hline
+\includegraphics[width=0.14\linewidth]{cor-sagital-age-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-age-t-iW} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-cdr-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-cdr-t-iW} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-mmse-t-iG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-mmse-t-iW} \\ \hline \hline
 %%
 \parbox[t]{4mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Mass Imbalance}}}&
-\includegraphics[width=0.16\linewidth]{cor-axial-age-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-age-t-mW} &
-\includegraphics[width=0.16\linewidth]{cor-axial-cdr-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-cdr-t-mW} &
-\includegraphics[width=0.16\linewidth]{cor-axial-mmse-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-mmse-t-mW} \\ 
+\includegraphics[width=0.14\linewidth]{cor-axial-age-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-age-t-mW} &
+\includegraphics[width=0.14\linewidth]{cor-axial-cdr-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-cdr-t-mW} &
+\includegraphics[width=0.14\linewidth]{cor-axial-mmse-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-mmse-t-mW} \\ 
 %
         &
-\includegraphics[width=0.16\linewidth]{cor-coronal-age-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-age-t-mW} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-cdr-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-cdr-t-mW} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-mmse-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-mmse-t-mW} \\ 
+\includegraphics[width=0.14\linewidth]{cor-coronal-age-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-age-t-mW} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-cdr-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-cdr-t-mW} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-mmse-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-mmse-t-mW} \\ 
 %
         &
-\includegraphics[width=0.16\linewidth]{cor-sagital-age-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-age-t-mW} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-cdr-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-cdr-t-mW} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-mmse-t-mG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-mmse-t-mW} \\ \hline \hline
+\includegraphics[width=0.14\linewidth]{cor-sagital-age-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-age-t-mW} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-cdr-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-cdr-t-mW} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-mmse-t-mG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-mmse-t-mW} \\ \hline \hline
 %%
 \parbox[t]{2mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Transport Cost}}}&
-\includegraphics[width=0.16\linewidth]{cor-axial-age-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-age-t-tW} &
-\includegraphics[width=0.16\linewidth]{cor-axial-cdr-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-cdr-t-tW} &
-\includegraphics[width=0.16\linewidth]{cor-axial-mmse-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-axial-mmse-t-tW} \\ 
+\includegraphics[width=0.14\linewidth]{cor-axial-age-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-age-t-tW} &
+\includegraphics[width=0.14\linewidth]{cor-axial-cdr-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-cdr-t-tW} &
+\includegraphics[width=0.14\linewidth]{cor-axial-mmse-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-axial-mmse-t-tW} \\ 
 %
         &
-\includegraphics[width=0.16\linewidth]{cor-coronal-age-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-age-t-tW} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-cdr-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-cdr-t-tW} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-mmse-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-coronal-mmse-t-tW} \\ 
+\includegraphics[width=0.14\linewidth]{cor-coronal-age-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-age-t-tW} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-cdr-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-cdr-t-tW} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-mmse-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-coronal-mmse-t-tW} \\ 
 %
         &
-\includegraphics[width=0.16\linewidth]{cor-sagital-age-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-age-t-tW} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-cdr-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-cdr-t-tW} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-mmse-t-tG} &
-\includegraphics[width=0.16\linewidth]{cor-sagital-mmse-t-tW} \\ \hline \hline
+\includegraphics[width=0.14\linewidth]{cor-sagital-age-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-age-t-tW} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-cdr-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-cdr-t-tW} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-mmse-t-tG} &
+\includegraphics[width=0.14\linewidth]{cor-sagital-mmse-t-tW} \\ \hline \hline
 %
 & \parbox[b][4mm]{12mm}{Age (w)} 
 & \parbox[b][4mm]{12mm}{Age (g)} 
@@ -470,16 +474,19 @@ matter, leading to a surplus of gray matter in that area.
 \caption{\label{fig:cor-oasis-gray}
 Correlation of Age, MMSE and CDR with smoothed segmentation mask intensity,
 optimal transport mass imbalances and optimal transport costs of gray and white
-matter.  Correlations are only shown for voxels were the correlation has a
-permutation tested p-value less than 0.05. The background image are average
-white and gray matter segmentations. 
+matter.  Correlations are only shown at locations permutation tested p--value
+less than 0.05. The background image are average white and gray matter
+segmentations. 
 } 
 \end{figure} \endgroup
 A standard VBM analysis is not able to detect the general deterioration for
 gray matter related to age, CDR and MMSE.
 
-
-\begin{figure}
+Figure~\ref{fig:prediction} shows results of fitting elastic nets to the
+optimal transport based measures and intensity based measures and comparisons
+of linear models of intensity VBM, transport VBM and the global deformation
+based approach in~\cite{gerber2010manifold}.  
+\begin{figure}[htb]
 \scriptsize
 \begin{tabular}{cc}
 \raisebox{-15mm}{\includegraphics[width=34mm]{glmnet-cvm-permutations}}
@@ -487,11 +494,11 @@ gray matter related to age, CDR and MMSE.
 \begin{tabular}{l|cccc|cc}
 \parbox[2mm]{33mm}{Model}  & 
 \parbox[2mm]{11mm}{\centering Residual} & 
-\parbox[2mm]{5mm}{\centering $R^2$} & 
-\parbox[2mm]{5mm}{\centering F}   & 
+\parbox[2mm]{5mm }{\centering $R^2$} & 
+\parbox[2mm]{5mm }{\centering F}   & 
 \parbox[2mm]{11mm}{\centering p--value}   & 
-\parbox[2mm]{7mm}{\centering CVM }  & 
-\parbox[2mm]{7mm}{\centering $l_1 R^2$} 
+\parbox[2mm]{7mm }{\centering CVM }  & 
+\parbox[2mm]{7mm }{\centering $l_1 R^2$} 
         \\ \hline \hline
 \scriptsize
 Age, Manifold LDDMM  & 4.4  & 0.14  & 9.9  & 1.0e-4      & NA    & NA  \\
@@ -506,7 +513,8 @@ CDR, Transport VBM   & 0.26 & 0.61  & 8.5  & 5.2e-15     & 0.34  & 0.36    \\
 \end{tabular} \\
         \footnotesize{ (a) } & \footnotesize{ (b) }
 \end{tabular}
-\caption{ \label{fig:prediction} Prediction with elastic net and comparison to linear models based on the LDDMM manifold approach.} 
+\caption{ \label{fig:prediction} Prediction with elastic net and comparison to
+linear models based on the LDDMM manifold approach.} 
 \end{figure}
 
 MMSE  11 nonzeros ( 1tw / 1, 3tg / 3,  7mW / 0 )
