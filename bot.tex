@@ -111,7 +111,7 @@ need to have equal mass by adding a mechanism to create and / or destruct mass
 into the optimization problem. The solution of the unbalanced optimal transport
 yields a transport map, or coupling, that measures how much mass is moved
 between source and target locations. We decompose these transport maps to
-measure for each subject, at each voxel, into mass allocation and mass
+measure for each subject, at each voxel, mass allocations and costs of mass
 transfer. These two measures explicitly separate mass from shape changes and
 due to the non-local nature of optimal transport can take into effect global
 effects such as relative position of anatomical structure,  as long as they are
@@ -196,12 +196,13 @@ proposed method correctly identifies shape versus mass effects.
 \end{figure}
 
 Figure~\ref{fig:cor-ellipse} illustrates these two optimal transport based
-measures on a toy example of a hundred half ellipses with different ellipticity
-and volume.  Correlating the derived measures from the unbalanced optimal
-transport solutions with either shape or size of the ellipse shows that the
-proposed method is capable of correctly attributing changes to either variation
-in shape or size.  Traditional voxel-based morphometry does not indicate the
-source of the changes and results in weak correlation with changes in size.
+measures on a toy example of a hundred half--ellipses with different
+ellipticity and volume.  Correlating the derived measures from the unbalanced
+optimal transport solutions with either shape or size of the half--ellipses
+shows that the proposed method is capable of correctly attributing changes to
+either variation in shape or size.  Traditional voxel-based morphometry does
+not indicate the source of the changes and results in weak correlation with
+changes in size.
 
 We demonstrate the proposed method on white and gray matter masks of the OASIS
 brain data set~\citep{marcus2010open}. We choose to use the gray and white
@@ -213,50 +214,86 @@ only requirement is that the measurement are commensurable across subjects.
 
 \section{Related Work}
 
-Optimal transport and the associated Wasserstein metric, also referred to as
-Earth-movers distance, have been extensively used in computer vision
-applications. Recent advances that permit fast computation of optimal transport
-maps on large data sets lead to a flurry of research in machine learning and 
+%Optimal transport and the associated Wasserstein metric, also referred to as
+%Earth-movers distance, have been extensively used in computer vision
+%applications. Recent advances that permit fast computation of optimal transport
+%maps on large data sets lead to a flurry of research in machine learning and 
 %Both the mass allocation take into account global effects, in particular the
 %shape measures can capture non-local changes, such as
 %relative positions of anatomical structures as long as they are no removed
 %during the spatial normalization step.  
 
-Voxel-based morphometry (VBM) is a popular approach to detect anatomical
-changes by comparing, potentially modulated, intensities at each voxel after
-spatial normalization. Similarly Tensor-based morphometry (TBM) compares
-measures derived, typically the Jacobian determinant, from a non-linear spatial
-normalization that aligns the subjects of the population to a single template
-at each voxel. Deformation-based morphometry (DBM) address the issue of finding
-global effects but are more difficult to interpret and lack the localization of
-the statistical parametric maps (SPM) resulting from voxelwise comparisons.
+Voxel-based and tensor-based morphometry (VBM/TBM) are popular approaches to
+detect spatially localized anatomical changes~\citep{ashburner2000voxel}. VBM
+compares, potentially modulated, intensities at each voxel after
+spatial normalization. Similarly TBM compares measures derived, typically the
+Jacobian determinant, from a non-linear spatial normalization that aligns the
+subjects of the population to a single template at each voxel. 
+Voxel-based
+morphometry (VBM) yields spatially localized changes in brain anatomy but has
+been shown to be sensitive to the particulars of the spatial
+normalization~\citep{bookstein2001voxel, davatzikos2004voxel} and has
+difficulty in discovering regionally or globally occurring changes. 
 
+Deformation-based morphometry (DBM)~\citep{ashburner1998identifying} adresses
+the issue of finding global effects by comparing the parameters of non-linear
+spatial normalization to a template.  DBM has successfully been applied for
+prediction of pathologies~\citep{gaser2001deformation,lao2004morphological} and been refined to
+jointly deal with multiple anatomical
+structures~\cite{durrleman2014morphometry} and take into account data dependent
+nonlinearity into the estimation of spatial warp
+parameters~\citep{gerber2010manifold}. DBM results, typically shown as modes of
+variation are more difficult and interpret. Local effects can be teased out of
+the spatial warps.
 
+Recent advances in the computation of optimal transport
+plans~\citep{cuturi2013sinkhorn,gerber2017multiscale} paved the way for a
+flurry in machine learning and applications to medical image
+analysis~\citep{cuturi2014fast,gramfort2015fast,rolet2018blind}. In
+particular,~\citet{gramfort2015fast} formulate a DBM approach which replaces
+non-linear warps by optimal transport maps. 
+
+The unbalanced optimal transport approach presents a different approach to
+integrate optimal transport into morphometric analysis. The proposed approach
+represents mixture between VBM and DBM methods.  While the results are based
+on a voxelwise analysis, the quantities compared stem from a global
+optimization problem which can global and regional effects and adds separation
+of a effects due to changes in volume from effects due to changes in shape.  A
+key observation is that for VBM and TBM the voxelwise measures are driven by
+local image gradients and ultimately lead to very similar
+results~\citep[Chaper~6]{frackowiak2004human}.  Unbalanced optimal transport
+measures solves a global optimization based on the distribution of mass and the
+allocation of mass is not driven by the image gradients. Thus, allocation of
+mass can be diffuse over a large region without the need for a smooth spatial
+normalization to distribute the image gradient driven warp over a larger
+region.
+
+%This global optimization  is insensitive to local shifts
+%in boundaries since such shifts only incur a small cost of moving mass locally.
+%Large cost of moving mass are due to more significant shifts in the anatomy or
+%different distributions of mass among different parts of the anatomy. The
+%addition of mass allocation with unbalanced optimal transport captures mass
+%difference between subject without potentially confounding effects of shape
+%changes in non-linear spatial warps. Furthermore 
 %VBM
-Voxel-based morphometry (VBM) yields spatially localized changes in brain
-anatomy but has been shown to be sensitive to mis-registration and is incapable
-of discovering globally occurring changes. 
+
 %DBM
-Deformation-based morphometry (DBM) takes a more global approach by analysis of
-deformation fields. While DBM yields overall measures of changes in shape, the
-results are sensitive to the parametrization and regularization of the
-deformation field and require delineation of regions of interest to average
-deformation field statistics. A priori definition of regions defeats the
-purpose of automatic discovery of relevant anatomical changes. 
+%Deformation-based morphometry (DBM) takes a more global approach by analysis of
+%deformation fields. While DBM yields overall measures of changes in shape, the
+%results are sensitive to the parametrization and regularization of the
+%deformation field and require delineation of regions of interest to average
+%deformation field statistics. A priori definition of regions defeats the
+%purpose of automatic discovery of relevant anatomical changes. 
 %Manifold model
-The manifold model approach extends DBM to allow for possible non-linear
-relationships in the data and avoids having to select a template.
+%The manifold model approach extends DBM to allow for possible non-linear
+%relationships in the data and avoids having to select a template.
 %Visualization
-For both approaches visualization of relevant changes is difficult.
+%For both approaches visualization of relevant changes is difficult.
 %OT map based
-In \cite{} propose an optimal transport based approach that is similar to DBM
-but uses a optimal transport map parametrization to a template. The approach 
+%In \cite{} propose an optimal transport based approach that is similar to DBM
+%but uses a optimal transport map parametrization to a template. The approach 
 %OT voxel based, this work
-The unbalanced optimal transport approach presents a mixture between VBM and
-DBM based methods.  While the resulting analysis is voxelwise, the quantities
-compared stem from a global optimization problem which mitigates some of the
-issues of a traditional VBM and introduces a way that moves towards separating
-effects due to changes in volume from effects due to changes in shape.
+
 
 %Optimal transport is not sensitive to small misalignments in the spatial
 %normalization step which result only in a small transport cost of shifting mass
@@ -303,7 +340,7 @@ $\coupling^*$ minimizes this cost over all choices of couplings
 $\mathcal{C}(\mu,\nu)$ between
 $\mu$ and $\nu$: 
 \begin{equation}
-  \coupling^*= \argmin_{\coupling\in\mathcal{C}(\mu,\nu)} \int_{{\Xsp}}\int_{{\Xsp}}
+  \coupling^*= \argmin_{\coupling\in\mathcal{C}(\mu,\nu)} \int_{{\Xsp}}\int_{{\Ysp}}
 \cost(x,y)  d\coupling(x,y) \,.  
 \end{equation}
 
@@ -358,6 +395,7 @@ allocated the mass in such a manner that cost of moving the remaining mass is
 minimized.
 
 \subsection{Mass Allocation and Transport Cost Construction}
+\label{sec:mass}
 To construct the voxelwise mass allocation and transport cost measures we solve
 for transport plans $\coupling^*_{i,j}$ between all subjects $X_i$ and $X_j$.  
 The variable $z$ in equation~\ref{eq:unbalanced} captures the amount of mass
@@ -526,20 +564,6 @@ Age 29 nonzeros   ( 4tw / 1, 6tg / 3,  2mg / 1, 17mw / 1 )
 mmse permuted p-value 0.03, other 0
 
 \section{Conclusion}
-A key observation is that for VBM, TBM and DBM analysis which derive voxelwise
-measures are driven by local image gradients and ultimately, at the voxel
-level, lead to very similar results~\cite[Chaper~6]{frackowiak2004human}.
-Unbalanced optimal transport measures solves a global optimization based on the
-distribution of mass. This global optimization  is insensitive to local shifts
-in boundaries since such shifts only incur a small cost of moving mass locally.
-Large cost of moving mass are due to more significant shifts in the anatomy or
-different distributions of mass among different parts of the anatomy. The
-addition of mass allocation with unbalanced optimal transport captures mass
-difference between subject without potentially confounding effects of shape
-changes in non-linear spatial warps. Furthermore the allocation of mass is not
-driven by the image gradients and thus can be diffuse over a large region
-without the need of a smooth spatial normalization to distribute the image
-gradient driven warp over a larger region.
 
 Unablanced optimal transport is not restricted to be applied to segmentation
 mask, it can be directly applied to graylevel intensities or with an
