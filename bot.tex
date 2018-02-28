@@ -144,7 +144,7 @@ to registrations to a single template  in other methods.
 \begin{tabular}{c}
 \begin{tabular}{lcr}
 \multicolumn{3}{c}{Pearson's r }\\
-        -0.9 & \includegraphics[width=0.6\linewidth]{colorbar} & 0.9
+        -0.9 & \includegraphics[width=0.5\linewidth]{colorbar} & 0.9
 \end{tabular}\\
 \begin{tabular}{l|c|c|c}
 %\rowcolor{col3}\\ 
@@ -527,42 +527,36 @@ optimal transport based measures and intensity based measures and comparisons
 of linear models of intensity VBM, transport VBM and the global deformation
 based approach in~\cite{gerber2010manifold}.  
 \begin{figure}[htb]
+\centering
 \scriptsize
 \begin{tabular}{cc}
 \raisebox{-15mm}{\includegraphics[width=34mm]{glmnet-cvm-permutations}}
         &
-\begin{tabular}{l|cccc|ccc}
+\begin{tabular}{l|cc|cccc}
 \parbox[2mm]{33mm}{Model}  & 
-\parbox[2mm]{11mm}{\centering Residual} & 
-\parbox[2mm]{5mm }{\centering $R^2$} & 
-\parbox[2mm]{5mm }{\centering F}   & 
-\parbox[2mm]{11mm}{\centering p--value}   & 
-\parbox[2mm]{7mm }{\centering CVM }  & 
-\parbox[2mm]{7mm }{\centering $l_1 R^2$} &  
-\parbox[2mm]{7mm }{\centering NNZ} 
+\parbox[2mm]{11mm}{\centering Residual}  &
+\parbox[2mm]{7mm }{\centering $R^2$ }    &
+\parbox[2mm]{7mm }{\centering CVM 1se }  & 
+\parbox[2mm]{7mm }{\centering $R^2$ 1se} & 
+\parbox[2mm]{7mm }{\centering CVM min }  & 
+\parbox[2mm]{7mm }{\centering $R^2$ min} 
         \\ \hline \hline
 \scriptsize
-  Age, Manifold LDDMM  & 4.4  & 0.14  & 9.9  & 1.0e-4      & NA    & NA   & NA  \\
-  Age, Intensity VBM   & 2.4  & 0.86  & 17.4 & $<\epsilon$ & 4.8   & 0.53 & 34  \\
-  Age, Transport VBM   & 3.1  & 0.74  & 11.1 & $<\epsilon$ & 4.4   & 0.51 & 29  \\ \hline
-  MMSE, Manifold LDDMM & 3.8  & 0.15  & 20.9 & 1.2e-5      & NA    & NA   & NA \\
-  MMSE, Intensity VBM  & 3.0  & 0.50  &  5.6 & 2.1e-10     & 3.87  & 0.32 & 23 \\
-  MMSE, Transport VBM  & 3.0  & 0.50  & 11.2 & 3.3e-13     & 3.89  & 0.23 & 11 \\ \hline
-  CDR, Manifold LDDMM  & 0.35 & 0.20  & 30.0 & 2.4e-7      & NA    & NA   & NA \\
-  CDR, Intensity VBM   & 0.19 & 0.79  & 19.5 & $<\epsilon$ & 0.34  & 0.52 & 23\\
-  CDR, Transport VBM   & 0.26 & 0.61  & 8.5  & 5.2e-15     & 0.34  & 0.36 & 21  \\
+  Age, Manifold LDDMM  & 4.4  & 0.14 & -    & -    & -    & -    \\
+  Age, Intensity VBM   & -    & -    & 4.9  & 0.24 & 4.8  & 0.95 \\
+  Age, Transport VBM   & -    & -    & 4.5  & 0.39 & 4.3  & 0.72 \\ \hline
+  MMSE, Manifold LDDMM & 3.8  & 0.15 & -    & -    & -    & -    \\
+  MMSE, Intensity VBM  & -    & -    & 3.80 & 0.21 & 3.61 & 0.97 \\
+  MMSE, Transport VBM  & -    & -    & 3.61 & 0.25 & 3.27 & 0.54 \\ \hline
+  CDR, Manifold LDDMM  & 0.35 & 0.20 & -    & -    & -    & -    \\
+  CDR, Intensity VBM   & -    & -    & 0.36 & 0.21 & 0.33 & 0.69 \\
+  CDR, Transport VBM   & -    & -    & 0.32 & 0.40 & 0.30 & 0.72 \\
 \end{tabular} \\
         \footnotesize{ (a) } & \footnotesize{ (b) }
 \end{tabular}
 \caption{ \label{fig:prediction} Prediction with elastic net and comparison to
 linear models based on the LDDMM manifold approach.} 
 \end{figure}
-
-MMSE  11 nonzeros ( 1tw / 1, 3tg / 3,  7mW / 0 )
-
-CDR 21 nonzeros   ( 3tw / 1, 6tg / 2, 12mw / 0 )
-
-Age 29 nonzeros   ( 4tw / 1, 6tg / 3,  2mg / 1, 17mw / 1 ) 
 
 mmse permuted p-value 0.03, other 0
 
