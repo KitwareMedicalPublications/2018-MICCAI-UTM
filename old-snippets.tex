@@ -1,4 +1,180 @@
 
+\begin{table}[h!]
+\centering
+\scriptsize
+\begin{tabular}{l|cc|cccc}
+  \parbox[b][2mm]{33mm}{Model}  & 
+  \parbox[b][2mm]{11mm}{\centering Residual}  &
+  \parbox[b][4mm]{7mm }{\centering R\textsuperscript{2} }    &
+  \parbox[b][4mm]{7mm }{\centering CVM 1se }  & 
+  \parbox[b][4mm]{7mm }{\centering R\textsuperscript{2}  1se} & 
+  \parbox[b][4mm]{7mm }{\centering CVM min }  & 
+  \parbox[b][4mm]{7mm }{\centering R\textsuperscript{2}  min} 
+        \\ \hline \hline
+  Age, Manifold LDDMM  & 4.4  & 0.14 & -    & -    & -    & -    \\
+  Age, Intensity VBM   & -    & -    & 4.9  & 0.24 & 4.8  & 0.95 \\
+  Age, Transport VBM   & -    & -    & 4.5  & 0.39 & 4.3  & 0.72 \\ \hline
+  MMSE, Manifold LDDMM & 3.8  & 0.15 & -    & -    & -    & -    \\
+  MMSE, Intensity VBM  & -    & -    & 3.80 & 0.21 & 3.61 & 0.97 \\
+  MMSE, Transport VBM  & -    & -    & 3.61 & 0.25 & 3.27 & 0.54 \\ \hline
+  CDR, Manifold LDDMM  & 0.35 & 0.20 & -    & -    & -    & -    \\
+  CDR, Intensity VBM   & -    & -    & 0.36 & 0.21 & 0.33 & 0.69 \\
+  CDR, Transport VBM   & -    & -    & 0.32 & 0.40 & 0.30 & 0.72 \\
+\end{tabular} 
+\caption{ \label{fig:prediction}  Elastic net regression on transport cost
+and mass allocation images versus intensity images and comparison to linear
+models based on a global deformation approach. (p--value 0) and for MMSE 1.1 times (p-value 0.03) based on 1000
+permutations.} 
+\vspace{-10mm}
+\end{table}
+
+
+
+\begin{figure}[h!]
+\centering
+\scriptsize
+\begin{tabular}{cc}
+\begin{tabular}{l|cc|cccc}
+  \parbox[b][2mm]{33mm}{Model}  & 
+  \parbox[b][2mm]{11mm}{\centering Residual}  &
+  \parbox[b][4mm]{7mm }{\centering R\textsuperscript{2} }    &
+  \parbox[b][4mm]{7mm }{\centering CVM 1se }  & 
+  \parbox[b][4mm]{7mm }{\centering R\textsuperscript{2}  1se} & 
+  \parbox[b][4mm]{7mm }{\centering CVM min }  & 
+  \parbox[b][4mm]{7mm }{\centering R\textsuperscript{2}  min} 
+        \\ \hline \hline
+\scriptsize
+  Age, Manifold LDDMM  & 4.4  & 0.14 & -    & -    & -    & -    \\
+  Age, Intensity VBM   & -    & -    & 4.9  & 0.24 & 4.8  & 0.95 \\
+  Age, Transport VBM   & -    & -    & 4.5  & 0.39 & 4.3  & 0.72 \\ \hline
+  MMSE, Manifold LDDMM & 3.8  & 0.15 & -    & -    & -    & -    \\
+  MMSE, Intensity VBM  & -    & -    & 3.80 & 0.21 & 3.61 & 0.97 \\
+  MMSE, Transport VBM  & -    & -    & 3.61 & 0.25 & 3.27 & 0.54 \\ \hline
+  CDR, Manifold LDDMM  & 0.35 & 0.20 & -    & -    & -    & -    \\
+  CDR, Intensity VBM   & -    & -    & 0.36 & 0.21 & 0.33 & 0.69 \\
+  CDR, Transport VBM   & -    & -    & 0.32 & 0.40 & 0.30 & 0.72 \\
+\end{tabular} 
+&
+  \raisebox{-13.5mm}{\includegraphics[width=34mm]{glmnet-cvm-permutations}}
+\\
+        \footnotesize{ (a) } & \footnotesize{ (b) }
+\end{tabular}
+\caption{ \label{fig:prediction} (b) Elastic net regression on transport cost
+and mass allocation images versus intensity images and comparison to linear
+models based on a global deformation approach.(a) Permutation test for the
+transport based regression fits. The y-Axis show the distribution of the
+permuted CVM scaled by the non-permuted CVM, thus for Age the permuted results
+are on average 1.5 times above the non-permuted fit (p--value 0), for CDR 1.35
+times (p--value 0) and for MMSE 1.1 times (p-value 0.03) based on 1000
+permutations.} 
+\vspace{-7mm}
+\end{figure}
+
+
+\begingroup
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+%\scriptsize
+\renewcommand{\arraystretch}{0}
+\setlength{\tabcolsep}{0pt}
+\begin{figure}[h!]
+\centering
+\begin{tabular}{r}
+\begin{tabular}{lcr}
+        \multicolumn{3}{c}{\parbox[t][3mm]{20mm}{Pearson's r } }\\
+        \parbox[t][3mm]{7mm}{-0.7} & 
+        \includegraphics[width=0.8\linewidth]{colorbar} & 
+        \parbox[t][3mm]{6mm}{\hfill 0.7}
+\end{tabular}\\
+  \begin{tabular}{l||ccc||ccc||ccc} 
+ \multirow{2}{*}{\rotatebox[origin=c]{90}{Age}}&
+ %   \rotatebox[origin=c]{90}{G}&
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-tG} 
+  \\
+  &
+%    \rotatebox[origin=c]{90}{W}&
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-tW} 
+  \\ \hline 
+\multirow{2}{*}{\rotatebox[origin=c]{90}{CDR}}&
+%    \rotatebox[origin=c]{90}{G}&
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-tG} 
+  \\
+  &
+%    \rotatebox[origin=c]{90}{W}&
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-tW} 
+  \\ \hline 
+  \multirow{2}{*}{\rotatebox[origin=c]{90}{MMSE}} &
+%    \rotatebox[origin=c]{90}{G}&
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-tG} 
+  \\ 
+  &
+%    \rotatebox[origin=c]{90}{W}&
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-tW} 
+  \\ \hline  \hline
+  & \multicolumn{3}{c||}{Voxel Intensity}
+  & \multicolumn{3}{c||}{Mass Imbalance}
+  & \multicolumn{3}{c}{Transport Cost}
+\end{tabular}
+\end{tabular}
+\caption{\label{fig:cor-oasis}
+Correlation of Age, MMSE and CDR with smoothed segmentation mask intensity,
+optimal transport mass imbalances and optimal transport costs of gray and white
+matter.  Correlations are only shown at locations permutation tested p--value
+less than 0.05. The background image are average white and gray matter
+segmentations. 
+\vspace{-7mm}
+} 
+\end{figure} 
+\endgroup
+
+
 \begingroup
 \renewcommand{\arraystretch}{0}
 \setlength{\tabcolsep}{0pt}
