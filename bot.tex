@@ -122,7 +122,7 @@ the optimal transport derived measures do no depend on a template but instead
 are based don averaging pairwise transport maps, which will alleviate bias due
 to registrations to a single template  in other methods. 
 
-\begin{figure}[b!]
+\begin{figure}[t!]
 \scriptsize
 \centering
 \begin{tabular}{c}
@@ -144,7 +144,7 @@ to registrations to a single template  in other methods.
 \begin{tabular}{c}
 \begin{tabular}{lcr}
 \multicolumn{3}{c}{Pearson's r }\\
-        -0.9 & \includegraphics[width=0.5\linewidth]{colorbar} & 0.9
+        -0.9 & \includegraphics[width=0.6\linewidth]{colorbar} & 0.9
 \end{tabular}\\
 \begin{tabular}{l|c|c|c}
 %\rowcolor{col3}\\ 
@@ -189,6 +189,7 @@ intensity values, (middle) mass allocation and (bottom) transport costs.
 (f,g,h) Smoothed counts of Pearson's r correlation from the spatial
 correlations. The proposed method correctly identifies shape versus mass
 effects and leads to stronger correlations.  
+\vspace{-7mm}
 }
 \end{figure}
 
@@ -596,6 +597,7 @@ the transport based regression fits.The y-Axis is scaled by the cross-validated
 mean error, thus for Age the permuted results are on average 1.5 times above
 the non-permuted fit (p--value 0), for CDR 1.35 times (p--value 0) and for Age
 1.1 times (p-value 0.03) based on 1000 permutations.} 
+\vspace{-10mm}
 \end{figure}
 
 \section{Conclusion}
@@ -614,8 +616,6 @@ fashion as the global constrain in equation~\ref{eq:unbalanced}. Alternatively
 localization in a more diffuse manner is achieved by adding a cost to
 allocation of mass, which effectively will avoid moving mass further than the
 allocation penalty since it will be cheaper to create mass in the vicinity.
-
-Additional analysis methods: Clustering
 
 \footnotesize
 \bibliographystyle{apalike}
