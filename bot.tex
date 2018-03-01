@@ -187,13 +187,8 @@ correlations of (b) size (number of black pixels), (c) shape (ratio of the
 minor and major radii) and (d) sum of size and shape to pixel
 intensity values, (middle) mass allocation and (bottom) transport costs.
 (f,g,h) Smoothed counts of Pearson's r correlation from the spatial
-correlations. The optimal transport approach identifies the changes in size in
-the mass imbalance with much stronger correlations than the intensity based
-approach.  Shape is captured in both transport cost and intensity, with
-slightly stronger correlations with transport cost. Correlation to an additive
-shape and mass effect are correctly identified in both transport cost and mass
-imbalance, while the intensity values alone lead to weak correlations. The
-proposed method correctly identifies shape versus mass effects.  
+correlations. The proposed method correctly identifies shape versus mass
+effects and leads to stronger correlations.  
 }
 \end{figure}
 
@@ -330,7 +325,7 @@ transport cost maps for each subject.
 
 \subsection{Unbalanced Optimal Transport}
 \label{sec:unbalanced}
-For two probability measures  $\mu$ and $\nu$ on probability spaces ${\Xsp}$
+For two probability measures $\mu$ and $\nu$ on probability spaces ${\Xsp}$
 and ${\Ysp}$ respectively, a coupling of $\mu$ and $\nu$ is a measure
 $\coupling$ on ${\Xsp}\times{\Ysp}$ such that the marginals of $\coupling$ are
 $\mu$ and $\nu$. The coupling $\coupling$ defines a {\em transport plan} that
@@ -348,25 +343,13 @@ $\mu$ and $\nu$:
 
 For discrete distributions $\mu = \sum_1^n w(x_i) \delta(x_i)$ and $ \nu =
 \sum_1^m v(y_i) \delta(y_i)$ with $\sum w(x_i) = \sum v(y_i) = 1$ the optimal
-transport problem is equivalent to the linear program 
-\begin{equation}
-\min_\coupling \sum_{\substack{i=1,\dots,n\\ j=1,\dots,m}} 
-      \cost(x_i, y_j) \coupling(x_i, y_j) \quad \text{s.t.}\quad 
-\begin{cases}
-\sum_j \coupling(x_i, y_j) = \mu(\{x_i\}) = w(x_i) & \\ 
-\sum_i \coupling(x_i, y_j) = \nu(\{y_j\}) = v(y_j) & \\
- \coupling(x_i,y_j)\ge 0
-\end{cases}\,.
-\label{eq:balanced}
-\end{equation} 
-
-To extend the formulation to deal with arbitrary positive measures $\mu$ and
-$\nu$ which do not sum to one the linear program is modified to allow for the
-creation of mass. Define the mass imbalance $\Delta = \sum_1^n v(y_i)  -
-\sum_1^m w(x_i)$, the linear program is modified to allow for the creation of
-mass at locations $x_i$ by adding a new source location $z$ and target location
-and constraints that amount to adding or removing at most $w(x_i)$ to any
-location $x_i$ for free. The linear program reads: 
+transport problem can be solved by linear programming. To extend the
+formulation to deal with arbitrary positive measures $\mu$ and $\nu$ with mass
+imbalance  $\Delta = \sum_1^n v(y_i)  - \sum_1^m w(x_i)$, the linear program is
+modified to allow for the creation of mass at locations $x_i$ by adding a new
+source location $z$ and target location and constraints that amount to adding
+or removing at most $v(x_i)$ to any target location $y_i$ for free. With these
+modifications the linear program to solve is: 
 \begin{equation}
 \min_\coupling \sum_{\substack{i=1,\dots,n\\ j=1,\dots,m}} 
       \cost(x_i, y_j) \coupling(x_i, y_j) \quad \text{s.t.}\quad 
@@ -379,7 +362,7 @@ location $x_i$ for free. The linear program reads:
 \label{eq:unbalanced}
 \end{equation} 
 
-This modification results in a standard optimal transport problem through the
+The modifications result in a standard optimal transport problem through the
 addition of target location $z$ that can receive or deliver $\Delta$ mass at
 zero cost to or from any target location.  Thus, the unbalanced optimal
 transport can with only minor modifications be solved by fast approximation
@@ -398,154 +381,198 @@ minimized.
 
 \subsection{Mass Allocation and Transport Cost Construction}
 \label{sec:mass}
+For an image $X^k$ denote by $X^k(x_i)$ the associated value at voxel location
+$x_i$, which defines a measure $\mu^k = \sum_1^n X^k(x_i) \delta(x_i)$.
 To construct the voxelwise mass allocation and transport cost measures we solve
-for transport plans $\coupling^*_{i,j}$ between all subjects $X_i$ and $X_j$.  
+for optimal transport plans $\coupling^*_{k,l}$ between all images $X^k$ and $X^l$.  
 The variable $z$ in equation~\ref{eq:unbalanced} captures the amount of mass
-allocated when moving mass from $X_i$ to $X_j$. Denote by $z_{i, j}$ the mass
+allocated when moving mass from $X^k$ to $X^l$. Denote by $z_{k, l}$ the mass
 allocation variable associated with the optimal transport plan
-$\coupling^*_{i,j}$.  By construction $\coupling^*_{i,j}(z_{i,j}, y) =
--\coupling^*_{j,i}(z_{j,i}, x)$ for any $x \in X_i$ and $y \in X_j$.  For
-subject $X_i$ the mass allocation measure $m_i$ is constructed by
-\begin{equation}
-  m_i(x) = \sum_j \coupling^*_{i,j}( x, z_{i, j} )
-\end{equation}
-and the shape measure by
-\begin{equation}
-  s_i(x) = \sum_j sum_{y \in X_j} \coupling^*_{i,j}( x, y ) \cost(x, y)
-\end{equation}
+$\coupling^*_{k,l}$.  By construction $\coupling^*_{k,l}(z_{k,l}, x_i) =
+-\coupling^*_{l,k}(z_{l,k}, x_i)$.  For
+subject $X_k$ the mass allocation image $M^k$ is constructed by
+$M^k(x_i) = \sum_l \coupling^*_{k,l}( z_{k, l}, x_i )$ and the transport cost image by
+$C^k(x_i) = \sum_l \sum_j \coupling^*_{k,l}( x_i, x_j ) \cost(x, y)$
+
+The resulting images are smoothed with a Gaussian kernel and replace the
+smoothed intensity or Jacobian determinants in VBM or TBM analysis,
+respectively. 
 
 
 
 \section{Application to OASIS Brain MRI}
+We apply the mass allocation and transport cost measures to the OASIS brain
+data set~\citep{marcus2010open}.  The OASIS database consists of T1 weighted
+MRI of 416 subjects aged 18 to 96. One hundred of the subjects over the age of
+60 are diagnosed with mild to moderate dementia. The images in the OASIS data
+set are already skull-stripped, gain-field corrected and registered to the
+atlas space of~\citet{talaraich:book88} with a 12-parameter affine transform.
+We restrict the analysis to 137 patients from age 60 to 80, with 66 healthy
+patents and 71 patients with a diagnosis of very mild to moderate dementia as
+established by a clinical dementia rating (CDR, 0 = normal, 0.5 = very mild, 1
+= Mild, 2 = Moderate ), addiotnal to the CDR the data sets contains information
+about Age and a mini mental state examination score (MMSE, ranging from 30
+normal to 0).
 
-The results on the gray matter mask show an increase in the pons area
-correlated with CDR and even more so with MMSE.  A hypointense T1 signal in the
-pons area has been associated central pontine myelinolysis, which is linked to
-alcoholism. The pons in healthy patients typically identified as white matter,
-the hypointense signal could potentially lead to a identification with gray
-matter, leading to a surplus of gray matter in that area.
 \begingroup
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+%\scriptsize
 \renewcommand{\arraystretch}{0}
 \setlength{\tabcolsep}{0pt}
-\begin{figure}[tb]
+\begin{figure}[h!]
 \centering
-\begin{tabular}{c}
+\begin{tabular}{r}
 \begin{tabular}{lcr}
         \multicolumn{3}{c}{\parbox[t][3mm]{20mm}{Pearson's r } }\\
-        \parbox[t][3mm]{7mm}{-0.6} & 
+        \parbox[t][3mm]{7mm}{-0.7} & 
         \includegraphics[width=0.8\linewidth]{colorbar} & 
-        \parbox[t][3mm]{6mm}{\hfill 0.6}
+        \parbox[t][3mm]{6mm}{\hfill 0.7}
 \end{tabular}\\
-\begin{tabular}{l|cc|cc|cc} 
-\parbox[t]{4mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Voxel Intensity}}}&
-\includegraphics[width=0.15\linewidth]{cor-axial-age-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-age-t-iW} &
-\includegraphics[width=0.15\linewidth]{cor-axial-cdr-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-cdr-t-iW} &
-\includegraphics[width=0.15\linewidth]{cor-axial-mmse-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-mmse-t-iW} \\ 
-%
-        &
-\includegraphics[width=0.15\linewidth]{cor-coronal-age-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-age-t-iW} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-cdr-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-cdr-t-iW} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-mmse-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-mmse-t-iW} \\ 
-%
-        &
-\includegraphics[width=0.15\linewidth]{cor-sagital-age-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-age-t-iW} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-cdr-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-cdr-t-iW} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-mmse-t-iG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-mmse-t-iW} \\ \hline \hline
-%%
-\parbox[t]{4mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Mass Imbalance}}}&
-\includegraphics[width=0.15\linewidth]{cor-axial-age-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-age-t-mW} &
-\includegraphics[width=0.15\linewidth]{cor-axial-cdr-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-cdr-t-mW} &
-\includegraphics[width=0.15\linewidth]{cor-axial-mmse-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-mmse-t-mW} \\ 
-%
-        &
-\includegraphics[width=0.15\linewidth]{cor-coronal-age-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-age-t-mW} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-cdr-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-cdr-t-mW} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-mmse-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-mmse-t-mW} \\ 
-%
-        &
-\includegraphics[width=0.15\linewidth]{cor-sagital-age-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-age-t-mW} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-cdr-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-cdr-t-mW} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-mmse-t-mG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-mmse-t-mW} \\ \hline \hline
-%%
-\parbox[t]{2mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Transport Cost}}}&
-\includegraphics[width=0.15\linewidth]{cor-axial-age-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-age-t-tW} &
-\includegraphics[width=0.15\linewidth]{cor-axial-cdr-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-cdr-t-tW} &
-\includegraphics[width=0.15\linewidth]{cor-axial-mmse-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-axial-mmse-t-tW} \\ 
-%
-        &
-\includegraphics[width=0.15\linewidth]{cor-coronal-age-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-age-t-tW} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-cdr-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-cdr-t-tW} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-mmse-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-coronal-mmse-t-tW} \\ 
-%
-        &
-\includegraphics[width=0.15\linewidth]{cor-sagital-age-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-age-t-tW} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-cdr-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-cdr-t-tW} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-mmse-t-tG} &
-\includegraphics[width=0.15\linewidth]{cor-sagital-mmse-t-tW} \\ \hline \hline
-%
-& \parbox[b][4mm]{12mm}{Age (w)} 
-& \parbox[b][4mm]{12mm}{Age (g)} 
-& \parbox[b][4mm]{14mm}{CDR (w)} 
-& \parbox[b][4mm]{14mm}{CDR (g) }
-& \parbox[b][4mm]{16mm}{MMSE (w)}
-& \parbox[b][4mm]{16mm}{MMSE (g)}
+  \begin{tabular}{lc||ccc||ccc||ccc} 
+ \multirow{2}{*}{\rotatebox[origin=c]{90}{Age}}&
+    \rotatebox[origin=c]{90}{G}&
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-tG} 
+  \\
+  &
+    \rotatebox[origin=c]{90}{W}&
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-age-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-age-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-age-t-tW} 
+  \\ \hline 
+\multirow{2}{*}{\rotatebox[origin=c]{90}{CDR}}&
+    \rotatebox[origin=c]{90}{G}&
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-tG} 
+  \\
+  &
+    \rotatebox[origin=c]{90}{W}&
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-cdr-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-cdr-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-cdr-t-tW} 
+  \\ \hline 
+  \multirow{2}{*}{\rotatebox[origin=c]{90}{MMSE}} &
+    \rotatebox[origin=c]{90}{G}&
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-iG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-mG} &
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-tG} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-tG} 
+  \\ 
+  &
+    \rotatebox[origin=c]{90}{W}&
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-iW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-mW} &
+\includegraphics[width=0.1\linewidth]{cor-axial-mmse-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-coronal-mmse-t-tW} &
+\includegraphics[width=0.1\linewidth]{cor-sagital-mmse-t-tW} 
+  \\ \hline  \hline
+  & \multicolumn{3}{c||}{Voxel Intensity}
+  & \multicolumn{3}{c||}{Mass Imbalance}
+  & \multicolumn{3}{c}{Transport Cost}
 \end{tabular}
 \end{tabular}
-\caption{\label{fig:cor-oasis-gray}
+\caption{\label{fig:cor-oasis}
 Correlation of Age, MMSE and CDR with smoothed segmentation mask intensity,
 optimal transport mass imbalances and optimal transport costs of gray and white
 matter.  Correlations are only shown at locations permutation tested p--value
 less than 0.05. The background image are average white and gray matter
 segmentations. 
+\vspace{-7mm}
 } 
-\end{figure} \endgroup
-A standard VBM analysis is not able to detect the general deterioration for
-gray matter related to age, CDR and MMSE.
+\end{figure} 
+\endgroup
 
-Figure~\ref{fig:prediction} shows results of fitting elastic nets to the
-optimal transport based measures and intensity based measures and comparisons
-of linear models of intensity VBM, transport VBM and the global deformation
-based approach in~\cite{gerber2010manifold}.  
-\begin{figure}[htb]
+Mass allocation and transport cost images are constructed fro white and gray
+matter segmentation masks. Figure~\ref{fig:cor-oasis} shows voxelwise
+correlations to Age, negative MMSE and CDR and compares to a traditional VBM
+analysis based on intensity. The most striking difference is that the loss in
+overall gray matter is immediately visible in the mass allocation part of the
+transport based analysis. The overall loss related to Age is differently
+distributed from the loss related to CDR and MMSE. The VBM analysis is not
+capable to discover the global and regionally varying diminishing of gray
+matter. A second striking difference is the loss of white matter in the
+cerebellum and hippocampus that is significant in CDR and MMSE but not with
+respect to Age.  The transport cost and intensity pick up a shift in the
+location of the hippocampus. This could be due to an actual shift in the
+location of the hippocampus, a systematic spatial registration effect, or as
+the transport mass indicates due to a loss of mass in that particular region of
+the hippocampus.
+
+The results on the white matter mask show an increase in the pons area
+correlated with CDR and even MMSE.  A hypointense  T1 signal in the pons area
+has been associated central pontine myelinolysis, which is linked to
+alcoholism~\citep{quach2014early}. The pons in healthy patients typically
+identified as white matter, the hypointense signal could potentially lead to a
+identification with gray. Similarly, mass allocation indicates significant of
+loss in the brainstem regions which has been reported as a neglected locus in
+neurodegenrative diseases~\citep{grinberg2011brainstem}.  
+
+Figure~\ref{fig:prediction} shows results elastic
+net regression~\citep{Zou05regularizationand} on the optimal transport images
+and compares to elastic net regression on intensity images as well as to the
+linear models of the global deformation based
+approach~\citep{gerber2010manifold}. The results to the global deformation
+approach are not directly comparable, ~\citet{gerber2010manifold} used the
+Bayesian information criterion (BIC) to select a best fitting linear model.
+This is not feasible for selecting among 1000 of voxels and we resort to an
+elastic net regression. We report cross-validated mean square error (CVM) using
+a regularization based either on selecting the regularization that yielded the
+minimal CVM or the strongest regularization that falls within one standard
+deviation of the minimum as advocated by~\citep{Zou05regularizationand}. Note
+that the residual reported in~\citep{gerber2010manifold} is not obtained
+through cross-validated but by selecting a model with highest BIC among all
+possible models. Nevre-the-less the CVM surpass or are on par with the
+residuals of the linear models, potentially indicating a more reliable fit. The
+transport based regression outperforms the intensity based in all cases. The
+minimal regularization appears to overfit with much smaller $R^2$ but only a
+minor reduction in CVM.  
+\begin{figure}[h!]
 \centering
 \scriptsize
 \begin{tabular}{cc}
-\raisebox{-15mm}{\includegraphics[width=34mm]{glmnet-cvm-permutations}}
-        &
 \begin{tabular}{l|cc|cccc}
 \parbox[2mm]{33mm}{Model}  & 
 \parbox[2mm]{11mm}{\centering Residual}  &
-\parbox[2mm]{7mm }{\centering $R^2$ }    &
+\parbox[4mm]{7mm }{\centering $R^2$ }    &
 \parbox[7mm]{7mm }{\centering CVM 1se }  & 
-\parbox[7mm]{7mm }{\centering $R^2$ 1se} & 
+\parbox[10mm]{7mm }{\centering $R^2$ 1se} & 
 \parbox[7mm]{7mm }{\centering CVM min }  & 
-\parbox[7mm]{7mm }{\centering $R^2$ min} 
+\parbox[15mm]{7mm }{\centering $R^2$ min} 
         \\ \hline \hline
 \scriptsize
   Age, Manifold LDDMM  & 4.4  & 0.14 & -    & -    & -    & -    \\
@@ -557,14 +584,19 @@ based approach in~\cite{gerber2010manifold}.
   CDR, Manifold LDDMM  & 0.35 & 0.20 & -    & -    & -    & -    \\
   CDR, Intensity VBM   & -    & -    & 0.36 & 0.21 & 0.33 & 0.69 \\
   CDR, Transport VBM   & -    & -    & 0.32 & 0.40 & 0.30 & 0.72 \\
-\end{tabular} \\
+\end{tabular} 
+&
+  \raisebox{-13.5mm}{\includegraphics[width=34mm]{glmnet-cvm-permutations}}
+\\
         \footnotesize{ (a) } & \footnotesize{ (b) }
 \end{tabular}
-\caption{ \label{fig:prediction} Prediction with elastic net and comparison to
-linear models based on the LDDMM manifold approach.} 
+\caption{ \label{fig:prediction} (b) Elastic net regression and comparison to
+linear models based on a global deformation approach.(a) Permutation test for
+the transport based regression fits.The y-Axis is scaled by the cross-validated
+mean error, thus for Age the permuted results are on average 1.5 times above
+the non-permuted fit (p--value 0), for CDR 1.35 times (p--value 0) and for Age
+1.1 times (p-value 0.03) based on 1000 permutations.} 
 \end{figure}
-
-mmse permuted p-value 0.03, other 0
 
 \section{Conclusion}
 
@@ -585,6 +617,7 @@ allocation penalty since it will be cheaper to create mass in the vicinity.
 
 Additional analysis methods: Clustering
 
+\footnotesize
 \bibliographystyle{apalike}
 \bibliography{bot.bib,optimal-transport}
 
