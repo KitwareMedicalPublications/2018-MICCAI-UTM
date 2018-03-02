@@ -118,15 +118,16 @@ interpretable visualizations.
 Optimal transport, as the name implies, solves the problem of transporting mass
 from a probability measure $\mu$ to a probability measure $\nu$, such that the
 cost of moving mass from the source $\mu$ to the target $\nu$ is minimized.
-Unbalanced optimal transport extends optimal transport to measures that do not
-need to have equal mass by adding a mechanism to add mass to the optimization
-problem. The solution of the unbalanced optimal transport yields a transport
-plan, or coupling, that measures local mass allocation and movement between
-source and target locations. We decompose these transport plans to measure for
-each subject, at each voxel, mass allocations and costs of mass transfer. These
-two measures explicitly separate changes due to differences in amount of matter
-from differences due to changes in location of matter related to relative
-position and shape of anatomies. 
+Unbalanced optimal transport~\cite{guittet2002extended,benamou2003numerical}
+extends optimal transport to measures that do not need to have equal mass by
+adding a mechanism to add mass to the optimization problem. The solution of the
+unbalanced optimal transport yields a transport plan, or coupling, that
+measures local mass allocation and movement between source and target
+locations. We decompose these transport plans to measure for each subject, at
+each voxel, mass allocations and costs of mass transfer. These two measures
+explicitly separate changes due to differences in amount of matter from
+differences due to changes in location of matter related to relative position
+and shape of anatomies. 
 
 Voxel-based morphometry (VBM)~\cite{ashburner2000voxel} yields spatially
 localized changes in brain anatomy but has difficulty in discovering regionally
@@ -208,14 +209,14 @@ source of the changes to ellipse shape or size.
 (I) Illustration of unbalanced optimal transport on a toy data set of a 100
 half--ellipses with different shapes (ratio of major to minor radius) and sizes
 (black pixel count).  (II) Spatial correlations of size, shape and
-size + shape to pixel intensity values (VBM), UTM mass allocation
-and UTM transport costs.  Positive and negative correlation indicate an
+size + shape to VBM (pixel intensity) and UTM (mass allocation
+and transport costs).  Positive and negative correlation indicate an
 increase and decrease of mass, cost, or intensity, respectively. Only UTM is
 able to detect size variation (highlighted box) as strongly positively
 correlated to mass allocation.  Both UTM and VMB detect shape variation,
 with stronger correlations in transport cost than mass allocation in UTM. UTM
 identifies both change in shape and mass for the variable depending on shape
-plus size . 
+plus size. 
 %(III) Smoothed counts of Pearson's r correlation from the spatial
 %correlations. The proposed method correctly identifies shape versus mass
 %effects and leads to stronger correlations.  
@@ -244,9 +245,9 @@ normalization~\cite{bookstein2001voxel,davatzikos2004voxel}. UTM still depends
 on a rigid spatial normalization to bring the subjects into a common coordinate
 system were voxelwise comparisons are feasible. However, the optimal transport
 is insensitive to small miss-alignments in the spatial normalization step;
-small shifts in mass locations incur only small costs.  After the spatial
-normalization UTM does not depend on a template, the mass allocation and
-transport cost images are based on an averaging of quantities derived from
+small shifts in mass locations incur only small transport costs.  After the
+spatial normalization UTM does not depend on a template, the mass allocation
+and transport cost images are based on an averaging of quantities derived from
 pairwise transport plans, which alleviates bias due to registrations to a
 single template. 
 
@@ -256,13 +257,13 @@ The key contributions of this work are:
 \item A voxel-wise morphometry approach capable of detecting regional and
   global changes.  
 \item A formulation of unbalanced optimal transport to detect and disentangle mass
-  changes from changes in mass location (Section~\ref{sec:methods}).
-\item An application of optimal transport to gray and white matter masks
-  individually to avoid mass exchange between tissues and incommensurable
-  measurements across subjects in MRI intensities (Section~\ref{sec:results}).
+  changes 
 \item A demonstration of the importance of incorporating mass imbalances to
   detect and localize neurodegenerative anatomical changes.
-  (Section~\ref{sec:results}).  
+  (Section~\ref{sec:results}).from changes in mass location (Section~\ref{sec:methods}).
+\item An application of optimal transport to gray and white matter masks
+  individually to avoid mass exchange between tissues and incommensurable
+  measurements across subjects in MRI intensities (Section~\ref{sec:results}).  
 \end{enumerate}
 
 
@@ -317,7 +318,7 @@ For discrete distributions $\mu = \sum_1^n w(x_i) \delta(x_i)$ and $ \nu =
 \sum_1^m v(y_i) \delta(y_i)$ with $\sum w(x_i) = \sum v(y_i) = 1$ the optimal
 transport problem can be solved by linear programming. To extend the
 formulation to deal with arbitrary positive measures $\mu$ and $\nu$ with mass
-imbalance  $\Delta = \lvert \sum_1^n v(y_i)  - \sum_1^m w(x_i) \rVert$, the
+imbalance  $\Delta = \lvert \sum_1^n v(y_i)  - \sum_1^m w(x_i) \rvert$, the
 linear program is modified to allow for the creation of mass by adding a new
 source location $z^s$ and target location $z^t$ and constraints to restrict the
 amount of mass added to be at most $w(x_i)$ and $v(x_i)$ at any target and
@@ -340,7 +341,7 @@ only minor modifications, be solved by fast approximation algorithms for large
 data sets such as the Sinkhorn approach~\cite{cuturi2013sinkhorn} or multiscale
 strategies~\cite{gerber2017multiscale}. 
 
-An arbitrary cost $\cost(x^s, y_j)$ and  $\cost(x_i, y^t, y_j)$ can be assigned
+An arbitrary cost $\cost(x^s, y_j)$ and  $\cost(x_i, y^t)$ can be assigned
 to allocate mass, and restriction to only allocate $\Delta$ amount of mass can
 be relaxed or removed, striking a trade-off between the cost of creating mass
 and the cost of moving mass. For our application, we choose the allocation of
@@ -358,9 +359,9 @@ cost $\cost$.
 For an image $X^k$ denote by $X^k(x_i)$ the associated non-negative value at
 voxel location $x_i$, which defines a measure $\mu^k = \sum_1^n X^k(x_i)
 \delta(x_i)$.  To construct the voxelwise mass allocation and transport cost
-measures we solve for optimal transport plans $\coupling^*_{k,l}$ between all
+images we solve for optimal transport plans $\coupling^*_{k,l}$ between all
 images $X^k$ and $X^l$.  The variables $z^s$ and $z^t$ in
-equation~\ref{eq:unbalanced} captures the amount of mass allocated when moving
+equation~\ref{eq:unbalanced} capture the amount of mass allocated when moving
 mass from $X^k$ to $X^l$. Denote by $z^s_{k, l}$ and $z^t_{k,l}$ the mass
 allocation variable associated with the optimal transport plan
 $\coupling^*_{k,l}$. For subject $X_k$ the mass allocation image $M^k$ is
@@ -497,17 +498,17 @@ segmentations.
 } 
 \end{figure} \endgroup
 We construct mass allocation and transport cost images for white and gray
-matter segmentation masks individually, to separate the changes in each tissue.
-However, the method can without modification be applied to any scalar image or
-with the definition of a corresponding cost function even to vector or tensor
-valued images. For a sensible application the only requirement is that the
-measurement at voxels are commensurable across subjects. For the cost $\cost$
-we use the squared euclidean distance between the voxel locations to introduce
-a preference of many small mass transports over single larger mass transfers.
-To reduce computation costs, we subsample the images to $44 \times 52 \times
-44$, which yields computations times of approximately one second using a
-multiscale optimal transport solver~\cite{gerber2017multiscale}. Both VBM
-intensities of the white and gray matter masks and the UTM mass and UTM cost
+matter segmentation masks individually. However, the method can without
+modification be applied to any scalar image or with the definition of a
+corresponding cost function even to vector or tensor valued images. For a
+sensible application the only requirement is that the measurement at voxels are
+commensurable across subjects. For the cost $\cost$ we use the squared
+euclidean distance between the voxel locations to introduce a preference of
+many small mass transports over single larger mass transfers.  To reduce
+computation costs, we subsample the images to $44 \times 52 \times 44$, which
+yields computations times of approximately one second using a multiscale
+optimal transport solver~\cite{gerber2017multiscale}. Both VBM intensities of
+the white and gray matter masks and the UTM mass allocation and transport cost
 images are smoothed with a Gaussian with 3mm standard deviation before
 computing correlations or regression models.
 
@@ -533,20 +534,20 @@ diminishing of gray and white matter.
 %loss in the brainstem regions which has been reported as a neglected locus in
 %neurodegenrative diseases~\cite{grinberg2011brainstem}.  
 
-Table~\ref{fig:prediction} shows results of elastic net
-regression~\cite{Zou05regularizationand} on UTM cost and mass images and
-compares to VBM intensity images. We set the elastic net regression penalty
-trade-off to $\alpha=0.1$, a large ridge penalty and small sparsity penalty
-trade--off.  Table~\ref{fig:prediction} report cross-validated root mean square
-error (RMSE) using regularizations based on the minimal RMSE and the strongest
-regularization that results in an RMSE within one standard deviation of the
-minimal RMSE, as advocated by~\cite{Zou05regularizationand}.  The minimal
-regularization appears to overfit with a much smaller R\textsuperscript{2}  but
-only a minor reduction in RMSE. The UTM based regression outperforms the VBM
-based in all cases. For the weaker regularized models UTM results in a larger
-reduction in RMSE combined with smaller reduction in R\textsuperscript{2}.
-These results indicate that UTM captures more neurodegenerative information
-than VBM.
+We compare the explanatory power of UTM to VBM with elastic net
+regression~\cite{Zou05regularizationand} of transport cost and transport images
+and intensity images on clinical parameters. We set the elastic net regression
+penalty trade-off to $\alpha=0.1$, a large ridge penalty and small sparsity
+penalty trade--off.  Table~\ref{fig:prediction} reports cross-validated root
+mean square error (RMSE) using regularizations based on the minimal RMSE and
+the strongest regularization that results in an RMSE within one standard
+deviation of the minimal RMSE, as advocated by~\cite{Zou05regularizationand}.
+The minimal regularization appears to overfit with a much smaller
+R\textsuperscript{2}  but only a minor reduction in RMSE. Regression on UTM
+images outperforms VBM on all clinical variables. For the weaker regularized
+models UTM results in a larger reduction in RMSE combined with smaller
+reduction in R\textsuperscript{2}.  These results indicate that UTM captures
+more neurodegenerative information than VBM.
 \begin{table}[h!]
 \centering
 %\scriptsize
@@ -575,8 +576,9 @@ than VBM.
 
 
 \section{Conclusion}
-The paper demonstrates that UTM captures changes in size more effectively than
-traditional VBM. UTM captures regional and global changes while retaining the
+The paper demonstrates that UTM captures changes related to size not detected
+by traditional VBM and can attribute effects to mass transfer and mass
+allocation. UTM captures regional and global changes while retaining the
 benefits of a voxelwise visualization and analysis of results.  The results in
 Section~\ref{sec:results} demonstrate the importance of incorporating mass
 imbalance into the morphometry framework.  Quantitative evaluation with linear
