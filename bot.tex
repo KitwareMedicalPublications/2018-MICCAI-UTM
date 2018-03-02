@@ -89,12 +89,16 @@ transport cost and mass changes for each subject in the population.  Using
 voxelwise correlations with disease indicators on these images highlight
 regions of mass or shape changes related to the disease indicator.  We
 demonstrate the method on the white and gray matter segmentations from the
-OASIS brain MRI data set, which includes subject ranging from healthy to mild
-and moderate dementia. The results corroborate known pathology changes related
-to dementia and suggest avenues for further clinical research. Additionally
-regression and permutation testing on the transport cost and mass change images
-improve on existing methods to predict disease measures and indicates that the
-proposed method captures a larger portion of pathology induced changes.
+OASIS brain MRI data set. The separation of white and gray matter ensures that
+the optimal transport based approach does not transfer mass between different
+tissues types and permits to analyze changes related to gray and white matter
+individually. The OASIS data set includes subjects ranging from healthy to mild
+and moderate dementia and the results corroborate known pathology changes
+related to dementia, that are not discovered with traditional voxel-based
+morphometry, and suggest avenues for further clinical research.  Regression on
+the transport cost and mass change images improve on voxel-based morphometry
+for prediction of clinical scores and indicates that the proposed method
+captures a larger portion of pathology induced changes.  
 \end{abstract}
 
 
@@ -105,10 +109,11 @@ brain anatomy that can be non-local in nature and effect amounts of white and
 gray matter as well as relative positioning and shapes of local brain anatomy.
 To detect and quantify these changes is a primary goal of morphometry based
 population analysis. We propose a morphometry approach based on unbalanced
-optimal transport that yields a voxelwise comparison that explicitly separates
-changes in matter volume from changes in matter location of and can take into
-account non-local changes. The proposed unbalanced transport morphometry (UTM)
-can detect global and regional deterioration of matter. 
+optimal transport (UTM) that yields a voxelwise comparison but can detect
+global and regional deterioration of matter. The UTM formulation explicitly
+separates changes in matter volume from changes in matter location and shape.
+This separation of effects leads to stronger correlations and more readily
+interpretable visualizations. 
 
 Optimal transport, as the name implies, solves the problem of transporting mass
 from a probability measure $\mu$ to a probability measure $\nu$, such that the
@@ -118,9 +123,9 @@ need to have equal mass by adding a mechanism to add and remove mass
 into the optimization problem. The solution of the unbalanced optimal transport
 yields a transport plan, or coupling, that measures how much mass is moved or
 added and removed between source and target locations. We decompose these
-transport plans to measure for each subject, at each voxel, mass allocations and
-costs of mass transfer. These two measures explicitly separate changes due to
-difference in amount of matter from differences due to changes in relative
+transport plans to measure for each subject, at each voxel, mass allocations
+and costs of mass transfer. These two measures explicitly separate changes due
+to difference in amount of matter from differences due to changes in relative
 position and shape of anatomies. 
 
 Voxel-based morphometry (VBM)~\cite{ashburner1998identifying} yields spatially
@@ -131,8 +136,8 @@ half--ellipses with different ellipticity and thickness.  Correlating the
 derived measures from UTM with either shape or size of the half--ellipses shows
 that the proposed method is capable of correctly attributing changes to either
 variation in shape or size.  Traditional VBM  results in weak correlation with
-changes in size and cannot attribute the source of the changes to size or
-shifts in positions.
+changes in size and cannot attribute the source of the changes to ellipse shape
+or size.
 
 \begin{figure}[t!]
 \scriptsize
@@ -196,16 +201,15 @@ shifts in positions.
 %\end{tabular}
 \caption{\label{fig:cor-ellipse}
 (I) Illustration of unbalanced optimal transport on a toy data set of a 100
-half ellipses with different shapes (minor, major radii) and sizes (thickness).
-(II) Spatial correlations of (a) size (number of black pixels), (b) shape
-(ratio of the minor and major radii) and (c) sum of size and shape to pixel
-intensity values (VBM) , TBM mass allocation and TBM transport costs. Positive
-and negative correlation indicate an increase and decrease of mass, cost, or
-intensity, respectively. Only UTM is able to detect the size covariate
-(highlighted box) as positively correlated in all locations and with much
-stronger correlation than VBM.  Both UTM and VMB detect the change in shape and
-UTM correctly attributes mostly to transport cost. UTM also correctly identifies
-a decomposition of a covariate that depends on both shape and size. 
+half ellipses with different shapes (ratio of major to minor radius) and sizes
+(thickness).  (II) Spatial correlations of (a) size (b) shape and (c) sum of
+size and shape to pixel intensity values (VBM) , UBM mass allocation and UBM
+transport costs.  Positive and negative correlation indicate an increase and
+decrease of mass, cost, or intensity, respectively. Only UTM is able to detect
+the size covariate (highlighted box) as strongly positively correlated to mass
+allocation.  Both UTM and VMB detect the change in shape and UTM correctly
+attributes more of the change to transport cost. UTM also correctly identifies
+and decomposes of a covariate that depends additively on both shape and size. 
 %(III) Smoothed counts of Pearson's r correlation from the spatial
 %correlations. The proposed method correctly identifies shape versus mass
 %effects and leads to stronger correlations.  
@@ -214,14 +218,12 @@ a decomposition of a covariate that depends on both shape and size.
 \end{figure}
 
 Deformation-based morphometry (DBM)~\cite{ashburner1998identifying} addresses
-the issue of finding global effects by comparing the parameters of non-linear
-spatial normalization to a template.  DBM results, typically shown as modes of
+the issue of detecting global effects by comparing the parameters of non-linear
+spatial normalizations to a template.  DBM results, typically shown as modes of
 variation, are more difficult to visualize and interpret.  UTM combines the
 strengths of VBM and DBM methods.  While the results are based on a voxelwise
 analysis and easily interpretable, the quantities compared stem from a global
-optimization problem which can detect global and regional effects and adds
-separation of a effects due to changes in volume from effects due to changes in
-location or shape. 
+optimization problem which can detect global and regional effects.  
 
 A key observation is that VBM, TBM and DBM are driven by local image gradients
 and voxelwise measures ultimately lead to very similar
@@ -239,9 +241,9 @@ is insensitive to small miss-alignments in the spatial normalization step.
 Small shifts in mass locations incur only small costs, while for VBM, TBM and
 DBM a small shift either introduces a large difference in pixel intensity or
 can introduce large local deformations.  After the spatial normalization the
-optimal transport derived measures do no depend on a template but instead are
-based on averaging pairwise transport plans, which will alleviate bias due to
-registrations to a single template. 
+UBM derived iamges do not depend on a template but instead are based on
+averaging pairwise transport plans, which alleviates bias due to registrations
+to a single template. 
 
 %Section~\ref{sec:methods} describes unbalanced optimal transport and the
 %construction of mass allocation and transport cost images
@@ -251,49 +253,48 @@ registrations to a single template.
 The key contributions of this work are:
 \vspace{-1mm}
 \begin{enumerate}
-\item A voxel-wise morphometry approach that is capable of detecting regional
-  or global changes and is insensitive to small spatial misalignments.
-\item A formulation of unbalanced otimal transport to detect changes in mass as
-  well as changes in shape and relative position (Section~\ref{sec:methods}).
-\item Application of optimal transport to gray and white matter masks
-  individally to avoid trnasport accross tissues and avoid incomesurable
+\item A voxel-wise morphometry approach capable of detecting regional and
+  global changes.  
+\item A formulation of unbalanced optimal transport to separate and detect mass
+  changes from changes in shape and relative position of anatomies
+  (Section~\ref{sec:methods}).
+\item An application of optimal transport to gray and white matter masks
+  individually to avoid mass exchange between tissues and incommensurable
   measurements across subjects in MRI intensities (Section~\ref{sec:results}).
-\item Demonstration of the importance of incororating mass imbalances to detect
-  changes in brain anatomy (Section~\ref{sec:results}).  
+\item A demonstration of the importance of incorporating mass imbalances to
+  detect and localize neurodegenerative anatomical changes.
+  (Section~\ref{sec:results}).  
 \end{enumerate}
 
+
 \section{Related Work}
-
-
 Recent advances in the computation of optimal transport
 plans~\cite{cuturi2013sinkhorn,gerber2017multiscale} paved the way for a flurry
-in machine learning and applications to medical image analysis. In particular,
-Kundu et. al.~\cite{kundu2018discovery} formulate a DBM approach, TrBM, which
-replaces non-linear warps by optimal transport maps and Gramfort et.
-al.~\cite{gramfort2015fast} use optimal transport for improved averaging of
-neuroimaging data. 
+applications in machine learning and spurred interst in applications to medical
+image analysis. In particular, Gramfort et.  al.~\cite{gramfort2015fast} use
+optimal transport for improved averaging of neuroimaging data and Kundu et.
+al.~\cite{kundu2018discovery} formulate a DBM approach, TrBM, which replaces
+non-linear warps by optimal transport plans. 
 
-UTM presents a different approach from TrBM to integrate optimal transport into
-morphometric analysis. TrBM yields a parametrization of the transport plans
-akin to DBM that captures global changes. UTM uses the transport plan to create
-voxelwise measures and incorporates mass imbalances into the transport plans.
-TrBM was applied to graylevel MRI intensities, we choose to use the gray and
-white matter masks instead of MRI intensity values to avoid conversion of white
-to gray matter in the optimal transport optimization and to avoid difficulties
-in normalizing MRI intensities across subjects. 
-
+UTM integrates optimal transport to morphometric analysis in a different way
+from TrBM.  TrBM yields a parametrization of the transport plans akin to DBM
+that captures global changes. UTM uses the transport plan to create voxelwise
+measures and adds mass imbalances into the transport plans, which prove to be
+an important indicator in neurodegenerative diseases.  The TrBM is applied to
+graylevel MRI intensities, we choose to use the gray and white matter masks
+instead of MRI intensity values to avoid conversion of white to gray matter in
+the optimal transport optimization and to avoid difficulties in normalizing MRI
+intensities across subjects. 
 
 
 \section{Unbalanced Optimal Transport Morphometry}
 \label{sec:methods}
-Morphometry with unbalanced optimal transport follows the standard morphometry
-pipeline, but performs voxelwise statistical analysis on the mass allocation
-and transport cost maps derived from the solution of unbalanced optimal
-transport between the subjects.
-
-Section~\ref{sec:unbalanced} describes the unbalanced optimal transport problem
-and Section~\ref{sec:mass} the construction of the mass allocation and
-transport cost maps for each subject.
+Morphometry with unbalanced optimal transport follows the standard voxelwise
+morphometry pipeline but performs voxelwise statistical analysis on the mass
+allocation and transport cost maps derived from the solution of unbalanced
+optimal transport between the subjects. Section~\ref{sec:unbalanced} describes
+the unbalanced optimal transport problem and Section~\ref{sec:mass} the
+construction of the mass allocation and transport cost maps for each subject.
 
 \subsection{Unbalanced Optimal Transport}
 \label{sec:unbalanced}
@@ -318,10 +319,10 @@ For discrete distributions $\mu = \sum_1^n w(x_i) \delta(x_i)$ and $ \nu =
 transport problem can be solved by linear programming. To extend the
 formulation to deal with arbitrary positive measures $\mu$ and $\nu$ with mass
 imbalance  $\Delta = \sum_1^n v(y_i)  - \sum_1^m w(x_i)$, the linear program is
-modified to allow for the creation of mass at locations $x_i$ by adding a new
-source location $z$ and target location and constraints that amount to adding
-or removing at most $v(x_i)$ to any target location $y_i$ for free. With these
-modifications the linear program to solve is: 
+modified to allow for the creation of mass at locations $y_i$ by adding a new
+source location $z$ and constraints to restrict the amount to added or removed
+to at most $v(x_i)$ at any target location $y_i$. With these modifications the
+linear program to solve is: 
 \begin{equation}
 \min_\coupling \sum_{\substack{i=1,\dots,n\\ j=1,\dots,m}} 
       \cost(x_i, y_j) \coupling(x_i, y_j) \quad \text{s.t.}\quad 
@@ -346,10 +347,9 @@ An arbitrary cost $\cost(z, y_j)$ can be assigned to allocate mass, and $z$
 does not need to be restricted to only create or remove $\Delta$ amount of
 mass, striking a trade-off between the cost of creating mass and the cost of
 moving mass. For our application, we choose the allocation of mass at zero cost
-but only allow for the allocation of $\Delta$ mass. This forces all mass in the
-target location to be matched to a source location location and distribute the
-allocated the mass in such a manner that cost of moving the remaining mass is
-minimized.
+but only allow for the allocation of exactly $\Delta$ mass. This forces all
+mass in the target location to be matched to a source location location and
+distribute the mass $\Delta$ optimally to reduce the cost of movement.
 
 Solving the unbalanced optimal transport problem is convex and yields a global
 minimum without any parameter tuning, the only choice to be made is the
@@ -366,30 +366,30 @@ allocated when moving mass from $X^k$ to $X^l$. Denote by $z_{k, l}$ the mass
 allocation variable associated with the optimal transport plan
 $\coupling^*_{k,l}$.  By construction $\coupling^*_{k,l}(z_{k,l}, x_i) =
 -\coupling^*_{l,k}(z_{l,k}, x_i)$.  For
-subject $X_k$ the mass allocation image $M^k$ is constructed by
-$M^k(x_i) = \sum_l \coupling^*_{k,l}( z_{k, l}, x_i )$ and the transport cost image by
-$C^k(x_i) = \sum_l \sum_j \coupling^*_{k,l}( x_i, x_j ) \cost(x, y)$
-
+subject $X_k$ the mass allocation image $M^k$ is constructed by $M^k(x_i) =
+\sum_l \coupling^*_{k,l}( z_{k, l}, x_i )$ and the transport cost image by
+$C^k(x_i) = \sum_l \sum_j \coupling^*_{k,l}( x_i, x_j ) \cost(x_i, y_j)$
 
 The images $M^k$ and $C^k$ are smoothed with a Gaussian with sigma of 3mm and
-replace the smoothed intensity or Jacobian determinants in the statistiocal
+replace the smoothed intensity or Jacobian determinants in the statistical
 analysis of a VBM or TBM pipeline. 
 
 
 \section{Application to OASIS Brain MRI}
 \label{sec:results}
-We apply the mass allocation and transport cost measures to the OASIS brain
-data set~\cite{marcus2010open}.  The OASIS database consists of T1 weighted
-MRI of 416 subjects aged 18 to 96. One hundred of the subjects over the age of
-60 are diagnosed with mild to moderate dementia. The images in the OASIS data
-set are already skull-stripped, gain-field corrected and registered to the
-Talaraich atlas space~\cite{talaraich:book88} with a 12-parameter affine
-transform.  We restrict the analysis to 137 patients from age 60 to 80, with 66
-healthy patents and 71 patients with a diagnosis of very mild to moderate
-dementia as established by a clinical dementia rating (CDR, 0 = normal, 0.5 =
-very mild, 1 = Mild, 2 = Moderate ), additional to the CDR the data sets
-contains information about Age and a mini mental state examination score (MMSE,
-count of correct answers with a perfect score of 30).
+We apply UBM to the OASIS brain data set~\cite{marcus2010open}. The OASIS
+database consists of T1 weighted MRI of 416 subjects aged 18 to 96. One hundred
+of the subjects over the age of 60 are diagnosed with mild to moderate
+dementia. The images in the OASIS data set are already skull-stripped,
+gain-field corrected and registered to the Talaraich atlas
+space~\cite{talaraich:book88} with a 12-parameter affine transform.  To focus
+on dementia related effects we restrict the analysis to 137 patients from age
+60 to 80. This set of patients contains 66 healthy patents and 71 patients with
+a diagnosis of very mild to moderate dementia as established by a clinical
+dementia rating (CDR, 0 = normal, 0.5 = very mild, 1 = Mild, 2 = Moderate ). In
+addition to CDR the data set contains information about Age and a mini mental
+state examination score (MMSE, count of correct answers with a perfect score of
+30).
 
 \begingroup
 \renewcommand{\arraystretch}{0}
@@ -483,16 +483,14 @@ count of correct answers with a perfect score of 30).
 \end{tabular}
 \end{tabular}
 \caption{\label{fig:cor-oasis}
-Correlation of Age, MMSE and CDR with smoothed segmentation mask intensity,
-optimal transport mass imbalances and optimal transport costs of gray and white
-matter.  Correlations are only shown at locations permutation tested p--value
-less than 0.05. The background image are average white and gray matter
+Correlation of Age, MMSE and CDR with VBM, UBM mass imbalances and UBM
+transport costs on gray and white matter segmentation masks.  Correlations are
+only shown at locations permutation tested p--value less than 0.05 (1000
+permutations). The background image are average white and gray matter
 segmentations.
 \vspace{-5mm}
 } 
 \end{figure} \endgroup
-
-
 We construct mass allocation and transport cost images for white and
 gray matter segmentation masks individually. We choose here the application to
 white and gray matter segmentation masks to separate the changes in each
@@ -505,17 +503,21 @@ introduce a preference of many small mass transports over single larger mass
 transfers.  To reduce computation costs, we subsample the images to subsampled
 $44 \times 52 \times 44$, which yielded computations times of approximately one
 second using the multiscale optimal transport solver described in Gerber et.
-al.~\cite{gerber2017multiscale}.
+al.~\cite{gerber2017multiscale}. Both VBM intensities of the white and gray
+matter masks and the UBM mass and UBM cost images are smoothed with a Gaussian
+with 3mm standard deviation before computing correlations or regression models.
 
-Figure~\ref{fig:cor-oasis} shows voxelwise correlations to Age, negative MMSE
-and CDR and compares to a traditional VBM analysis based on intensity. The most
+Figure~\ref{fig:cor-oasis} shows voxelwise correlations to Age, CDR and
+negative MMSE and compares to a traditional intensity VBM analysis. The most
 striking difference is that the loss in overall gray matter is immediately
-visible in the mass allocation part of the transport based analysis. The
-overall loss related to Age is differently distributed from the loss related to
-CDR and MMSE. A second striking difference is the loss of white matter around
-the ventricles that is significant in CDR and MMSE but not with respect to Age.
+visible in the mass allocation part of UBM. The overall loss related to Age is
+differently distributed from the loss related to CDR and MMSE. CDR and MMSE
+have more pronounced gray matter deterioration in the cerebellum and in the
+temporal lobe, known to be involved with cognitive decline. A second striking
+difference is the loss of white matter around the ventricles in the area of the
+hippocampus that is significant in CDR and MMSE but not with respect to Age.
 The VBM analysis is not capable to discover the global and regionally varying
-diminishing of gray and white matter  
+diminishing of gray and white matter. 
 %The results on the white matter mask show an increase in the pons area
 %correlated with CDR and even MMSE.  A hypointense  T1 signal in the pons area
 %has been associated with central pontine myelinolysis, which is linked to
@@ -526,17 +528,19 @@ diminishing of gray and white matter
 %neurodegenrative diseases~\cite{grinberg2011brainstem}.  
 
 Table~\ref{fig:prediction} shows results of elastic net
-regression~\cite{Zou05regularizationand} on the UTM cost and mass images and
+regression~\cite{Zou05regularizationand} on UTM cost and mass images and
 compares to VBM intensity images. We set the elastic net regression penalty
-trade-off to $\alpha=0.1$, i.e. larger ridge penalty and smaller sparsity
-penality. We report cross-validated root mean square error (CVM) using a
-regularization based on selecting the regularization that yielded the minimal
-CVM and alternatively the strongest regularization that falls within one
-standard deviation of the minimum, as advocated
-by~\cite{Zou05regularizationand}. The transport based regression outperforms
-the intensity based in all cases.  The minimal regularization appears to
+trade-off to $\alpha=0.1$, a large ridge penalty and small sparsity penalty
+trade--off.  Table~\ref{fig:prediction} report cross-validated root mean square error (CVM) using 
+regularizations based on the minimal CVM and the strongest regularization that
+falls within one standard deviation of the minimum, as advocated
+by~\cite{Zou05regularizationand}.  The minimal regularization appears to
 overfit with a much smaller R\textsuperscript{2}  but only a minor reduction in
-CVM.  
+CVM. The UBM based regression outperforms the VBM based in all cases. For the
+weaker regularized models UBM results in a larger reduction in CVM combined
+with smaller reduction in R\textsuperscript{2} for the weaker regularized
+models. Those results indicate that UBM captures more neurodegenerative
+information than VBM.
 \begin{table}[h!]
 \centering
 %\scriptsize
@@ -555,16 +559,16 @@ CVM.
   UTM, CDR   & {\bf 0.32 } & {\bf 0.40 }  & 0.30  & 0.72 \\
 \end{tabular} 
 \caption{ \label{fig:prediction}  Elastic net regression on UTM transport cost
-  and mass allocation images versus on VBM intensity images. Reported are
-  10-fold crossvalidated root mean square error (CVM) and R\textsuperscript{2}
-  with the amount of regularization either selected by the minimal CVM (1se).
-  Regression on UTM outperforms VBM on all covariates.
+  and mass allocation images versus regression on VBM intensity images.
+  Reported are 10-fold crossvalidated root mean square error (CVM) and
+  R\textsuperscript{2} with the amount of regularization either selected by the
+  minimal CVM (1se). Regression on UTM outperforms VBM on all covariates.
   \vspace{-10mm}}
 \end{table}
 
 
 \section{Conclusion}
-The paper demonstrated that UBM can capture changes in size more effectively
+The paper demonstrated that UBM captures changes in size more effectively
 than traditional VBM and is insensitive to small misalignments of anatomies in
 the spatial normalization step. UBM captures regional and global changes while
 retaining the benefits of a voxelwise visualization and analysis of results.
