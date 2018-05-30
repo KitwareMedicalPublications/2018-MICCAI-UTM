@@ -39,44 +39,21 @@
 \newcommand{\CjkY}{C^\Ysp_{j,k}}
 \newcommand{\psijkX}{\psi^\Xsp_{j,k}}
 \newcommand{\psijkY}{\psi^\Ysp_{j,k}}
-
-%%% Contributions
-% Unbalanced -> Mass imbalance is captured
-% Split gray and white matter
-
-%%% Things to fix
-% More explanation on figures
-% Clarify that we work on white matter and gray matter masks
-
 \begin{document}
 
 \title{Exploratory Population Analysis with Unbalanced Optimal Transport}
 \titlerunning{Exploratory Population Analysis with Unbalanced Optimal Transport}  
 
-\author{***, ***, ***, ***, ***}%Samuel Gerber, Marc Niethammer, Martin Styner, Stephen Aylward}
-\authorrunning{***}%Gerber et al.} 
-\institute{***\\%Kitware Inc, Carborro NC 27510, USA,\\
-\email{***@***.**}%samuel.gerber@kitware.com}
+\author{Samuel Gerber$^1$, Marc Niethammer$^2$, Martin Styner$^2$, Stephen Aylward$^1$}
+\authorrunning{Gerber et al.} 
+\institute{Kitware Inc, Carborro NC 27510, USA,
 \and
-***%University of North Carolina, Chapel Hill NC 27504, USA}
+University of North Carolina, Chapel Hill NC 27504, USA\\
+\email{samuel.gerber@kitware.com}
 }
 
+
 \maketitle              
-
-% What problems are we addressing?
-%  - [MRI] disentangle mass from shape changes
-%  - [MRI] No segmentations needed
-%  - [VESSELS] unstructured point clouds
-%  - [VESSELS] background blood perfusion
-
-% What's new?
-%  - Hypothesis generation
-%  - Different measure to capture changes
-%  - No deformable registration
-%  - No parameter tuning
-%  - [MRI] Unbalanced mass transport
-%  - [VESSELS] Decomposition of transport plan with respect to underlying measure
-
 
 \begin{abstract}
 The plethora of data from neuroimaging studies provide a rich opportunity to
@@ -271,10 +248,12 @@ The key contributions of this work are:
 Recent advances in the computation of optimal transport
 plans~\cite{cuturi2013sinkhorn,gerber2017multiscale} paved the way for a flurry
 of applications in machine learning and spurred interest in applications to
-medical image analysis. In particular, Gramfort et.
-al.~\cite{gramfort2015fast} use optimal transport for improved averaging of
-neuroimaging data and Kundu et.  al.~\cite{kundu2018discovery} formulate a DBM
-approach, TrBM, which replaces non-linear warps by optimal transport plans. 
+medical image analysis. Gramfort et.  al.~\cite{gramfort2015fast} use optimal
+transport for improved averaging of neuroimaging data, Feydy et
+al.~\cite{feydy2017optimal} use unbalanced optimal transport as a similarity
+measure for diffeomorphic registration and Kundu et.
+al.~\cite{kundu2018discovery} formulate a DBM approach, TrBM, which replaces
+non-linear warps by optimal transport plans. 
 
 UTM integrates optimal transport to morphometric analysis in a different way
 from TrBM.  TrBM yields a parametrization of the transport plans akin to DBM
@@ -480,12 +459,12 @@ state examination score (MMSE, count of correct answers with a perfect score of
 \includegraphics[width=0.146\linewidth]{cor-sagital-mmse-t-mW} \\ 
 
 \hline \hline
-& \parbox[b][3mm]{12mm}{Age (w)} 
 & \parbox[b][3mm]{12mm}{Age (g)} 
-& \parbox[b][3mm]{15mm}{CDR (w)} 
-& \parbox[b][3mm]{15mm}{CDR (g) }
-& \parbox[b][3mm]{15mm}{-MMSE (w)}
+& \parbox[b][3mm]{12mm}{Age (w)} 
+& \parbox[b][3mm]{15mm}{CDR (g)} 
+& \parbox[b][3mm]{15mm}{CDR (w) }
 & \parbox[b][3mm]{15mm}{-MMSE (g)}
+& \parbox[b][3mm]{15mm}{-MMSE (w)}
 \end{tabular}
 \end{tabular}
 \caption{\label{fig:cor-oasis}
@@ -510,7 +489,13 @@ yields computations times of approximately one second using a multiscale
 optimal transport solver~\cite{gerber2017multiscale}. Both VBM intensities of
 the white and gray matter masks and the UTM mass allocation and transport cost
 images are smoothed with a Gaussian with 3mm standard deviation before
-computing correlations or regression models.
+computing correlations or regression models. The multiscale optimal transport
+solver introduces an additional smoothing of the mass allocation instead of
+focusing allocations at the boundary regions. This yields visually more
+pelasing results but does not change the overall results drastically. This
+effect could also be achieved by limiting the amount of mass allocated at any
+given location.
+
 
 Figure~\ref{fig:cor-oasis} shows voxelwise correlations to Age, CDR and
 negative MMSE and compares to a traditional intensity VBM analysis. The most
@@ -581,18 +566,22 @@ by traditional VBM and can attribute effects to mass transfer and mass
 allocation. UTM captures regional and global changes while retaining the
 benefits of a voxelwise visualization and analysis of results.  The results in
 Section~\ref{sec:results} demonstrate the importance of incorporating mass
-imbalance into the morphometry framework.  Quantitative evaluation with linear
-regression for prediction of clinical parameters suggest that the transport
-cost and mass allocation images of UTM provide a richer description of
-anatomical changes.
+imbalance into the morphometry framework.  \\
+%Quantitative evaluation with linear
+%regression for prediction of clinical parameters suggest that the transport
+%cost and mass allocation images of UTM provide a richer description of
+%anatomical changes.
 
-The cost function introduces flexibility and many options to modify the
-behaviour of UTM. We intend to examine the effect of different cost functions
-and different mass balancing methods, as mentioned in
-Section~\ref{sec:unbalanced}.  A promising direction for future research is the
-modification of the cost function to be directly applicable to diffusion
-tensors.
-
+%The cost function introduces flexibility and many options to modify the
+%behaviour of UTM. We intend to examine the effect of different cost functions
+%and different mass balancing methods, as mentioned in
+%Section~\ref{sec:unbalanced}.  A promising direction for future research is the
+%modification of the cost function to be directly applicable to diffusion
+%tensors.
+\noindent{\it Acknowledgments } This work was funded, in part, by NIH grants
+R01EB021391, R01HD055741, U54HD079124, NINDS grants R42NS086295,
+R44NS081792, NCI grant R44CA165621 and NIBIB/NIGMS grant R01EB021396.
+\vspace{-0.15in}
 %\footnotesize
 \bibliographystyle{abbrv}
 \bibliography{bot.bib,optimal-transport}
