@@ -362,19 +362,20 @@ statistical analysis of a VBM or TBM pipeline.
 
 \section{Application to OASIS Brain MRI}
 \label{sec:results}
-We apply UTM to the OASIS brain data set~\cite{marcus2010open}. The OASIS
-database consists of T1 weighted MRI of 416 subjects aged 18 to 96. One hundred
-of the subjects over the age of 60 are diagnosed with mild to moderate
-dementia. The images in the OASIS data set are already skull-stripped,
-gain-field corrected and registered to the Talaraich atlas
-space~\cite{talaraich:book88} with a 12-parameter affine transform.  To focus
-on dementia related effects we restrict the analysis to 137 patients from age
-60 to 80. This set of patients contains 66 healthy patents and 71 patients with
-a diagnosis of very mild to moderate dementia as established by a clinical
-dementia rating (CDR, 0 = normal, 0.5 = very mild, 1 = Mild, 2 = Moderate ). In
-addition to CDR the data set contains information about Age and a mini mental
-state examination score (MMSE, count of correct answers with a perfect score of
-30).
+We apply UTM to the OASIS brain data set~\cite{marcus2010open}. Code to
+replicate the results is located at
+\url{https://github.com/KitwareMedical/UTM}. The OASIS database consists of T1
+weighted MRI of 416 subjects aged 18 to 96.  One hundred of the subjects over
+the age of 60 are diagnosed with mild to moderate dementia. The images in the
+OASIS data set are already skull-stripped, gain-field corrected and registered
+to the Talaraich atlas space~\cite{talaraich:book88} with a 12-parameter affine
+transform.  To focus on dementia related effects we restrict the analysis to
+137 patients from age 60 to 80. This set of patients contains 66 healthy
+patents and 71 patients with a diagnosis of very mild to moderate dementia as
+established by a clinical dementia rating (CDR, 0 = normal, 0.5 = very mild, 1
+= Mild, 2 = Moderate ). In addition to CDR the data set contains information
+about Age and a mini mental state examination score (MMSE, count of correct
+answers with a perfect score of 30).
 
 \begingroup
 \renewcommand{\arraystretch}{0}
@@ -492,7 +493,7 @@ images are smoothed with a Gaussian with 3mm standard deviation before
 computing correlations or regression models. The multiscale optimal transport
 solver introduces an additional smoothing of the mass allocation instead of
 focusing allocations at the boundary regions. This yields visually more
-pelasing results but does not change the overall results drastically. This
+pleasing results but does not change the overall results drastically. This
 effect could also be achieved by limiting the amount of mass allocated at any
 given location.
 
@@ -554,9 +555,9 @@ more neurodegenerative information than VBM.
   and mass allocation images versus regression on VBM intensity images.
   Reported are 10-fold crossvalidated root mean square error (RMSE) and
   R\textsuperscript{2} with the amount of regularization either selected by the
-  minimal RMSE (min) or the most parsinomous, strongest regularized, model
+  minimal RMSE (min) or the most parsimonious, strongest regularized, model
   within one standard deviation of the minimal RMSE (1se). 
-  \vspace{-10mm}}
+  \vspace{-5mm}}
 \end{table}
 
 
