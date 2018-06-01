@@ -63,8 +63,8 @@ and alteration of brain matter, i.e., changes in mass. We propose a morphometry
 approach using unbalanced optimal transport that detects and localizes changes in
 mass and separates them from changes due to the location of mass. The approach
 generates images of mass allocation and mass transport cost for each subject in
-the population. Voxelwise correlations with clinical variables highlights
-regions of mass allocation or mass transfer related to the variable.  We
+the population. Voxelwise correlations with clinical variables highlight
+regions of mass allocation or mass transfer related to the variables.  We
 demonstrate the method on the white and gray matter segmentations
 from the OASIS brain MRI data set.  The separation of white and gray matter
 ensures that optimal transport does not transfer mass between different
@@ -84,7 +84,7 @@ pathology induced changes.
 Neurological disease and disorder manifest in subtle and varied changes in
 brain anatomy that can be non-local in nature and effect amounts of white and
 gray matter as well as relative positioning and shapes of local brain anatomy.
-To detect and quantify these changes is a primary goal of morphometry based
+To detect and quantify these changes are primary goals of morphometry based
 population analysis. We propose a morphometry approach based on unbalanced
 optimal transport, termed UTM, that yields a voxelwise comparison but can
 detect global and regional deterioration of matter. The UTM formulation
@@ -109,7 +109,7 @@ and shape of anatomies.
 Voxel-based morphometry (VBM)~\cite{ashburner2000voxel} yields spatially
 localized changes in brain anatomy but has difficulty in discovering regionally
 or globally occurring changes. Figure~\ref{fig:cor-ellipse} demonstrate the
-capability of UTM to detect changes in size on a toy example of a hundred
+capability of UTM to detect changes in size on a toy example of one hundred
 half--ellipses with different ellipticity and thickness.  Correlating the
 mass allocation and mass transfer images from UTM with either shape or size of
 the half--ellipses shows that the proposed method is capable of correctly
@@ -183,7 +183,7 @@ source of the changes to ellipse shape or size.
 %  (III)
 %\end{tabular}
 \caption{\label{fig:cor-ellipse}
-(I) Illustration of unbalanced optimal transport on a toy data set of a 100
+(I) Illustration of unbalanced optimal transport on a toy data set of 100
 half--ellipses with different shapes (ratio of major to minor radius) and sizes
 (black pixel count).  (II) Spatial correlations of size, shape and
 size + shape to VBM (pixel intensity) and UTM (mass allocation
@@ -206,13 +206,13 @@ the issue of detecting global effects by comparing the parameters of non-linear
 spatial normalizations to a template.  DBM results, typically shown as modes of
 variation, are more difficult to visualize and interpret.  UTM combines the
 strengths of VBM and DBM methods.  While the results are based on a voxelwise
-analysis and easily interpretable, the quantities compared stem from a global
+analysis and are easily interpretable, the quantities compared stem from a global
 optimization problem which can detect global and regional effects.  
 
-A key observation is that VBM, TBM and DBM are driven by local image gradients
+A key observation is that VBM, TBM and DBM are driven by local image gradients,
 and voxelwise measures ultimately lead to very similar
 results~\cite[Chaper~6]{frackowiak2004human}.  UTM solves a global optimization
-problem based on the distribution of mass and the allocation of mass is not
+problem based on the distribution of mass, and the allocation of mass is not
 driven by image gradients. In UTM allocation of mass can be diffuse over a
 large region without the need for a smooth spatial normalization to distribute
 the image gradient driven warp over a larger region. 
@@ -236,8 +236,8 @@ The key contributions of this work are:
 \item A formulation of unbalanced optimal transport to detect and disentangle mass
   changes 
 \item A demonstration of the importance of incorporating mass imbalances to
-  detect and localize neurodegenerative anatomical changes.
-  (Section~\ref{sec:results}).from changes in mass location (Section~\ref{sec:methods}).
+  detect and localize neurodegenerative anatomical changes
+  (Section~\ref{sec:results}) from changes in mass location (Section~\ref{sec:methods}).
 \item An application of optimal transport to gray and white matter masks
   individually to avoid mass exchange between tissues and incommensurable
   measurements across subjects in MRI intensities (Section~\ref{sec:results}).  
@@ -251,7 +251,7 @@ of applications in machine learning and spurred interest in applications to
 medical image analysis. Gramfort et.  al.~\cite{gramfort2015fast} use optimal
 transport for improved averaging of neuroimaging data, Feydy et
 al.~\cite{feydy2017optimal} use unbalanced optimal transport as a similarity
-measure for diffeomorphic registration and Kundu et.
+measure for diffeomorphic registration, and Kundu et.
 al.~\cite{kundu2018discovery} formulate a DBM approach, TrBM, which replaces
 non-linear warps by optimal transport plans. 
 
@@ -523,8 +523,8 @@ diminishing of gray and white matter.
 We compare the explanatory power of UTM to VBM with elastic net
 regression~\cite{Zou05regularizationand} of transport cost and transport images
 and intensity images on clinical parameters. We set the elastic net regression
-penalty trade-off to $\alpha=0.1$, a large ridge penalty and small sparsity
-penalty trade--off.  Table~\ref{fig:prediction} reports cross-validated root
+penalty trade--off to $\alpha=0.1$, a large ridge penalty and small sparsity
+penalty trade--off.  Table~\ref{fig:prediction} reports cross--validated root
 mean square error (RMSE) using regularizations based on the minimal RMSE and
 the strongest regularization that results in an RMSE within one standard
 deviation of the minimal RMSE, as advocated by~\cite{Zou05regularizationand}.
@@ -553,7 +553,7 @@ more neurodegenerative information than VBM.
 \end{tabular} 
 \caption{ \label{fig:prediction}  Elastic net regression on UTM transport cost
   and mass allocation images versus regression on VBM intensity images.
-  Reported are 10-fold crossvalidated root mean square error (RMSE) and
+  Reported are 10--fold cross--validated root mean square error (RMSE) and
   R\textsuperscript{2} with the amount of regularization either selected by the
   minimal RMSE (min) or the most parsimonious, strongest regularized, model
   within one standard deviation of the minimal RMSE (1se). 
@@ -565,7 +565,7 @@ more neurodegenerative information than VBM.
 The paper demonstrates that UTM captures changes related to size not detected
 by traditional VBM and can attribute effects to mass transfer and mass
 allocation. UTM captures regional and global changes while retaining the
-benefits of a voxelwise visualization and analysis of results.  The results in
+benefits of a voxelwise visualization and analysis of results.  The results
 demonstrate the signficance of incorporating mass imbalance into the morphometry
 framework.  \\
 %Quantitative evaluation with linear
@@ -580,8 +580,8 @@ framework.  \\
 %modification of the cost function to be directly applicable to diffusion
 %tensors.
 \noindent{\it Acknowledgments } This work was funded, in part, by NIH grants
-R01EB021391, R01HD055741, U54HD079124, NINDS grants R42NS086295,
-R44NS081792, NCI grant R44CA165621, NSF grant ECCS-1711776 and NIBIB grant R01EB021396.
+R01EB021391, R01HD055741, U54HD079124, R42NS086295,
+R44NS081792, R44CA165621, and R01EB021396 and by NSF grant ECCS-1711776.
 \vspace{-0.15in}
 %\footnotesize
 \bibliographystyle{abbrv}
